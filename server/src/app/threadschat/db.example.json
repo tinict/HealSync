@@ -1,0 +1,82 @@
+{
+    "threads": [
+        {
+            "id": 1,
+            "title": "Thảo luận về ẩm thực",
+            "creator": {
+                "user_id": "user123",
+                "username": "foodlover42"
+            },
+            "messages": [
+                {
+                    "id": 101,
+                    "sender": {
+                        "user_id": "user123",
+                        "username": "foodlover42"
+                    },
+                    "content": "Chào mọi người! Bạn nào muốn chia sẻ món ăn yêu thích của mình không?",
+                    "timestamp": "2024-03-31T10:00:00"
+                },
+                {
+                    "id": 102,
+                    "sender": {
+                        "user_id": "user456",
+                        "username": "sushifanatic"
+                    },
+                    "content": "Mình thích món sushi Nhật Bản!",
+                    "timestamp": "2024-03-31T10:05:00",
+                    "reply_to": 101
+                },
+                {
+                    "id": 103,
+                    "sender": {
+                        "user_id": "user789",
+                        "username": "sushilover"
+                    },
+                    "content": "Mình cũng thích sushi! Nhất là sushi cá hồi.",
+                    "timestamp": "2024-03-31T10:10:00",
+                    "reply_to": 102
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "title": "Chia sẻ kinh nghiệm du lịch",
+            "creator": {
+                "user_id": "user456",
+                "username": "travelbug88"
+            },
+            "messages": [
+                {
+                    "id": 201,
+                    "sender": {
+                        "user_id": "user456",
+                        "username": "travelbug88"
+                    },
+                    "content": "Xin chào cả nhà! Ai đã từng đến Paris chưa? Mình cần một số gợi ý cho chuyến đi sắp tới.",
+                    "timestamp": "2024-03-31T11:00:00"
+                },
+                {
+                    "id": 202,
+                    "sender": {
+                        "user_id": "user789",
+                        "username": "parislover"
+                    },
+                    "content": "Mình đã đến Paris vài lần rồi. Bạn muốn biết về địa điểm du lịch hay những nhà hàng ngon?",
+                    "timestamp": "2024-03-31T11:05:00",
+                    "reply_to": 201
+                },
+                {
+                    "id": 203,
+                    "sender": {
+                        "user_id": "user123",
+                        "username": "firsttimeinparis"
+                    },
+                    "content": "Mình không đi Paris bao giờ nhưng nghe nói Catedral de Notre-Dame là một điểm tham quan không thể bỏ qua.",
+                    "timestamp": "2024-03-31T11:10:00",
+                    "reply_to": 202
+                }
+            ]
+        }
+    ]
+}

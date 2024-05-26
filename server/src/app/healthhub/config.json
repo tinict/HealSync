@@ -1,0 +1,22 @@
+{
+    "server":{
+      "id":"ServiceHealthHub",
+      "port": 5002
+    },
+    "api":{
+      "route":"api",
+      "modules": []
+    },
+    "serviceRegistry": {
+        "database": {
+            "name": "dev_healthhub_db",
+            "user": "root",
+            "password": "Tin18082002",
+            "host": "localhost",
+            "port": 3306
+        }
+    },
+    "auth": {
+        "JWT_Secret": "MABIMATKHONGBIET"
+    }
+}

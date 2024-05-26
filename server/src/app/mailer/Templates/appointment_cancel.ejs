@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hủy Lịch Khám</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background-color: #47a7f5;
+            color: #ffffff;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 10px;
+            font-size: 0.8em;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Thông Báo Hủy Lịch Khám</h2>
+        </div>
+        <div class="content">
+            <p>Kính gửi Quý khách,</p>
+            <p>Chúng tôi rất tiếc phải thông báo rằng lịch khám của bạn với bác sĩ <strong><%= doctor_firstname %> <%= doctor_lastname %></strong> vào
+                ngày <strong><%= date %></strong> lúc <strong><%= starttime %></strong> đã bị hủy do <%= reason %>.</p>
+            <p>Xin vui lòng liên hệ với chúng tôi để được hỗ trợ và hướng dẫn đặt lịch khám mới.</p>
+            <p>Chúng tôi thành thật xin lỗi vì sự bất tiện này và cảm ơn bạn đã thông cảm.</p>
+            <p>Trân trọng,</p>
+            <p><%= location %></p>
+        </div>
+        <div class="footer">
+            <p>Đây là email tự động, vui lòng không trả lời email này.</p>
+        </div>
+    </div>
+</body>
+
+</html>

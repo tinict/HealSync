@@ -1,0 +1,24 @@
+{
+    "server":{
+      "id":"ServiceThreadChat",
+      "port": 5006
+    },
+    "api":{
+      "route":"api",
+      "modules": [
+            { 
+                "name": "", 
+                "route": ""
+            }
+        ]
+    },
+    "serviceRegistry": {
+        "database": {
+            "name": "",
+            "user": "",
+            "password": "",
+            "host": "",
+            "port": 3306
+        }
+    }
+}

@@ -1,0 +1,22 @@
+{
+    "server":{
+      "id":"ServiceNotification",
+      "port": 5011
+    },
+    "api":{
+      "route":"api",
+      "modules": []
+    },
+    "serviceRegistry": {
+        "database": {
+            "name": "dev_notification_db",
+            "user": "root",
+            "password": "Tin18082002",
+            "host": "localhost",
+            "port": 3306
+        }
+    },
+    "auth": {
+        "JWT_Secret": "MABIMATKHONGBIET"
+    }
+}

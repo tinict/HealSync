@@ -1,0 +1,29 @@
+{
+    "server":{
+      "id":"ServiceIdentity",
+      "port": 5001
+    },
+    "api":{
+      "route":"api",
+      "modules": [
+            { 
+                "name": "", 
+                "route": ""
+            }
+        ]
+    },
+    "serviceRegistry": {
+        "database": {
+            "name": "dev_identity_db",
+            "user": "root",
+            "password": "Tin18082002",
+            "host": "localhost",
+            "port": 3306
+        }
+    },
+    "auth": {
+        "JWT": {
+            "Secret": "MABIMATKHONGBIET"
+        }
+    }
+}

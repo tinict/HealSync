@@ -1,0 +1,29 @@
+{
+    "server": {
+        "id": "ServiceManagerFile",
+        "port": 5010
+    },
+    "api": {
+        "route": "api",
+        "modules": [
+            {
+                "name": "",
+                "route": ""
+            }
+        ]
+    },
+    "serviceRegistry": {
+        "database": {
+            "name": "",
+            "user": "",
+            "password": "",
+            "host": "",
+            "port": 3306
+        }
+    },
+    "algolia": {
+        "app_id": "HH60784104",
+        "api_key": "448072b8799f04ca5efbae51b48efc08",
+        "index_name": "dev_healthhub"
+    }
+}

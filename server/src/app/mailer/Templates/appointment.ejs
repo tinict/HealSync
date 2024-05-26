@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác Nhận Lịch Hẹn</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background-color: #47a7f5;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 10px 20px;
+            background-color: #eee;
+            border-radius: 0 0 5px 5px;
+        }
+
+        .button {
+            background-color: #47a7f5;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Lịch Hẹn Đã Được Xác Nhận</h1>
+        </div>
+        <div class="content">
+            <p>Kính gửi  <%= lastname %>,</p>
+            <p>Lịch hẹn của bạn với <%= doctor %> vào ngày <%= datetime %> lúc <%= timeslot %> đã được đặt thành công.</p>
+            <p>Vui lòng xem chi tiết lịch hẹn dưới đây:</p>
+            <p><strong>Tên Bác Sĩ:</strong> <%= doctor %> </p>
+            <p><strong>Địa Điểm:</strong> <%= location %> </p>
+            <a href="http://localhost:3003/manager-appointment" class="button">Xem Lịch Hẹn</a>
+        </div>
+        <div class="footer">
+            <p>Cảm ơn bạn đã chọn phòng khám của chúng tôi.</p>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông Báo Mã Xác Thực OTP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background-color: #47a7f5;
+            color: #ffffff;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px;
+            font-size: 0.8em;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Thông Báo Mã Xác Thực OTP</h2>
+        </div>
+        <div class="content">
+            <p>Kính gửi Quý khách,</p>
+            <p>Mã xác thực OTP của bạn là: <strong><%= otp_key %></strong></p>
+            <p>Vui lòng sử dụng mã này để xác minh tài khoản của bạn. Và mã này chỉ có hiệu lực trong vòng 60s.</p>
+            <p>*CẢNH BÁO: Không được chia sẽ mã này cho bất kỳ ai.</p>
+            <p>Trân trọng!</p>
+            <p>HealthHub Team</p>
+        </div>
+        <div class="footer">
+            <p>Đây là email tự động, vui lòng không trả lời email này.</p>
+        </div>
+    </div>
+</body>
+</html>

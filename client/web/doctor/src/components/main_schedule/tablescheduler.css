@@ -1,0 +1,88 @@
+
+/* CSS */
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 80%;
+    border-radius: 8px;
+    z-index: 1000;
+}
+
+.modal-title {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.modal-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.modal-save-button {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.modal-close-button {
+    background-color: #f44336;
+    color: white;
+}
+
+
+.calendar-container {
+    height: calc(100vh - 193px);
+    background-color: #f5f5f5;
+}
+
+.calendar {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.modal {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 500px;
+    margin: auto;
+}
+
+.modal-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.modal-time {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.modal-close-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}

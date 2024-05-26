@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import bcrypt from 'bcrypt';
+const bcrypt = require('bcryptjs');
 import { injectable, inject } from "inversify";
 import {
     AccountEntity,

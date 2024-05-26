@@ -1,0 +1,34 @@
+:root {
+    --silver: rgb(224, 207, 207);
+}
+
+html {
+    font-family: Lato;
+}
+
+.avatar-image {
+    width: 180px;
+    height: 160px
+}
+
+.ProductItem {
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid var(--silver);
+    display: flex;
+    text-align: center;
+    gap: 30px;
+}
+
+
+.block-schedule {
+    width: 100px;
+    height: 30px;
+    background-color: gray;
+    margin: 0 16px 16px 16px
+}
+
+.container-schedule {
+    width: 530px;
+    display: flex;
+}

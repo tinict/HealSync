@@ -1,0 +1,23 @@
+.custom-radio {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.custom-radio input[type="radio"] {
+    opacity: 0;
+    position: fixed;
+    width: 0;
+}
+
+.custom-radio label {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.custom-radio input[type="radio"]:checked+label {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}

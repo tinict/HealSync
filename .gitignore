@@ -6,7 +6,6 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
-.env
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
@@ -129,21 +128,3 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
-
-./src/database/migrations
-
-dist/
-
-./server/src/app/Helpers/google-calendar/*.json
-./server/src/app/algolia/config.json
-./server/src/app/algolia/config.ts
-./server/src/app/google/config.json
-./server/src/app/google/config.ts
-./server/src/app/mailer/config.json
-./server/src/app/mailer/config.ts
-./server/src/app/media/config.json
-./server/src/app/media/config.ts
-./server/src/app/payment/config.json
-./server/src/app/payment/config.ts
-./server/src/app/threadschat/config.json
-./server/src/app/threadschat/config.ts

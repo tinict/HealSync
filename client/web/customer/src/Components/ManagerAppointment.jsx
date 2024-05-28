@@ -112,7 +112,7 @@ const AppointmentPage = () => {
         2: { text: "Đã khám", color: "success" },
         3: { text: "Đã hủy lịch", color: "danger" },
         4: { text: "Yêu cầu đổi lịch khám", color: "danger" },
-        5: { text: "Đang khám", color: "primary" },
+        5: { text: "Bác sĩ đang khám", color: "primary" },
     };
 
     const handleClose = (appointmentId) => {

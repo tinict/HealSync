@@ -52,6 +52,18 @@ export default function CalendarAppointment() {
         setEventDetail(null);
     };
 
+    function getPatientIdFromUrl(urlString) {
+        const url = new URL(urlString);
+        const pathSegments = url.pathname.split("/");
+
+        if (pathSegments.pop() === "created") {
+            return pathSegments[pathSegments.length - 1];
+        } else {
+            console.error("URL format not recognized: /doctor/examination/<id>/created expected");
+            return null;
+        }
+    };
+
     const handleCreateMedicalRecord = () => {
         navigate(`/examination/${eventDetail.extendedProps.details.customer_id}?type=re-examination&&appointment_id=${eventDetail.extendedProps.details.appointment_id}`);
         dispatch(medicalRecord({ appointment_id: eventDetail.extendedProps.details.id }));

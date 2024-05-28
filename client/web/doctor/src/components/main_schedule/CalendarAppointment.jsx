@@ -75,11 +75,15 @@ export default function CalendarAppointment() {
 
     const handleActionClick = () => {
         if (eventDetail && eventDetail.extendedProps && eventDetail.extendedProps.details) {
-            const { eventType, meetLink } = eventDetail.extendedProps.details;
+            const { eventType, meetLink, id } = eventDetail.extendedProps.details;
             if (eventType === 2) {
                 handleJoinOnlineAppointment(meetLink);
             } else {
                 handleCreateMedicalRecord();
+                axios.post('http://localhost:5002/api/v1/appointments/status', {
+                    "appointment_id": id,
+                    "status": 5
+                });
             }
         }
     };

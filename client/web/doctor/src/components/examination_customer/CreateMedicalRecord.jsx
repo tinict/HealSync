@@ -3,7 +3,7 @@ import html2canvas from 'html2canvas';
 import axios from 'axios';
 import jsPDF from 'jspdf';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppBar, Toolbar, Button, Box, Container } from '@mui/material';
+import { Toolbar, Button, Box, Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 function CreateMedicalRecord({ patient_id }) {
@@ -44,6 +44,20 @@ function CreateMedicalRecord({ patient_id }) {
             );
     };
 
+    const getPatientIdFromUrl = (urlString) => {
+        console.log(window.location.href);
+        const url = new URL(window.location.href);
+        const pathSegments = url.pathname.split("/");
+
+        if (pathSegments.pop() === "create") {
+            console.log(pathSegments[pathSegments.length - 1]);
+            return pathSegments[pathSegments.length - 1];
+        } else {
+            console.error("URL format not recognized: /doctor/examination/<id>/created expected");
+            return null;
+        }
+    };
+
     console.log(medicalRecord.appointment_id);
 
     const handleUploadPDF = () => {
@@ -77,7 +91,7 @@ function CreateMedicalRecord({ patient_id }) {
                     )
                         .then(response => {
                             console.log('File uploaded successfully:', response.data);
-                            navigate('/');
+                            navigate(`/examination/${getPatientIdFromUrl()}`);
                         })
                         .catch(error => {
                             console.error('Error uploading file:', error);
@@ -91,7 +105,7 @@ function CreateMedicalRecord({ patient_id }) {
             <Box sx={{ backgroundColor: 'white' }}>
                 <Toolbar sx={{ backgroundColor: 'white', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)', display: 'flex', justifyContent: 'space-between' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Button onClick={() => { navigate("/") }} variant="contained" color="primary" size="small">Quay lại</Button>
+                        <Button onClick={() => { navigate(`/examination/${getPatientIdFromUrl()}`) }} variant="contained" color="primary" size="small">Quay lại</Button>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Button onClick={generatePDF} variant="contained" color="primary" sx={{ ml: 1 }} size="small">Tải bệnh án</Button>

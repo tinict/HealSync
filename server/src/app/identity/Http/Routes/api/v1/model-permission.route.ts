@@ -12,7 +12,7 @@ class ModelPermissionRoute {
     constructor() {
         this.modelPermissionController = AppServiceProvider.getContainer().resolve(ModelPermissionController);
         this.intializeRoutes();
-    }
+    };
 
     intializeRoutes() {
         this.router.post(
@@ -29,7 +29,7 @@ class ModelPermissionRoute {
             "/v1/model-permission-integrations",
             this.modelPermissionController.getAllModelPermissionIntegration.bind(this.modelPermissionController)
         );
-    }
-}
+    };
+};
 
 export default new ModelPermissionRoute().router;

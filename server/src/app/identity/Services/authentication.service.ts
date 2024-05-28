@@ -155,6 +155,7 @@ export class AuthenticationService {
             }
 
             const token = this.generateAccessToken(account);
+            
             return token;
         } catch (error) {
             console.error(error);

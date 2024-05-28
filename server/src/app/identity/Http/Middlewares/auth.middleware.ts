@@ -35,7 +35,7 @@ export class AuthenticationMiddleware {
         this.credentialService = credentialService;
         this.authService = authService;
         this.accountService = accountService;
-    }
+    };
 
     configurePassport() {
         passport.use(new JwtStrategy({

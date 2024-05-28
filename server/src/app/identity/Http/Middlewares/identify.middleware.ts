@@ -22,7 +22,7 @@ export class IdentifyMiddleware {
     ) {
         this.credentialService = credentialService;
         this.authService = authService;
-    }
+    };
 
     async identifyAccount(req: Request, res: Response, next: NextFunction) {
         try {

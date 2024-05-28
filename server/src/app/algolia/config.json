@@ -1,6 +1,6 @@
 {
     "server": {
-        "id": "ServiceManagerFile",
+        "id": "ServiceAlgolia",
         "port": 5010
     },
     "api": {

@@ -28,6 +28,7 @@ export const UserDropdown = () => {
     axios.post(`http://localhost:5001/api/v1/auth/revoke`, { access_token: token });
     dispatch(logout());
     router.push('/login');
+    sessionStorage.clear();
   };
 
 

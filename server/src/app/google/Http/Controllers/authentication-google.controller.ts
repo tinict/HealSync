@@ -58,7 +58,7 @@ export class AuthenticationGoogleController {
                     token: access_token
                 });
             }
-            res.status(200).json(req.query.continue);
+            res.status(200).send('Logout successfull');
         } catch (error) {
             console.log(error);
             res.status(500).send('An error occurred');

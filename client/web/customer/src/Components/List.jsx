@@ -235,7 +235,7 @@ const List = () => {
                           </h5>
                           <p className="mb-1 text-muted">Chuyên khoa: {doctor.doctorEntity.specialty}</p>
                           <p className="mb-1 text-muted">Chức danh: {doctor.doctorEntity.position}</p>
-                          <p className="mb-1 text-muted">Đơn vị công tác: {doctor.doctorEntity.Workspace}</p>
+                          <p className="mb-1 text-muted">Đơn vị công tác: {doctor.doctorEntity.workspace}</p>
                           <p className="mb-1 text-muted">Địa điểm: {doctor.doctorEntity.location}</p>
                           <div className="d-flex align-items-center mt-2">
                             <Button variant="primary" size="sm" onClick={(e) => { e.stopPropagation(); handleProfileDoctor(doctor.doctorEntity.doctor_id); }}>

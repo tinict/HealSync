@@ -41,6 +41,7 @@ function Header() {
         axios.post('http://localhost:5000/api/v1/google/logout', { client_token });
         Cookies.remove('client_token');
         dispatch(logout());
+        localStorage.removeItem("state");
     };
 
     useEffect(() => {

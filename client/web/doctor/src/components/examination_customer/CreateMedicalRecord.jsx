@@ -71,6 +71,7 @@ function CreateMedicalRecord({ patient_id }) {
                     pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
 
                     const blob = pdf.output('blob');
+                    console.log(blob);
                     const formData = new FormData();
 
                     formData.append('patient_id', medicalRecord.patient_id);

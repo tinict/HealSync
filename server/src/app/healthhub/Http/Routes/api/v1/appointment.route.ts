@@ -37,6 +37,7 @@ class Appointment {
             "/v1/appointments/check/:timeslot_id", 
             this.appointmentController.appointmentExistTimeSlot.bind(this.appointmentController)
         );
+        
         this.router.put(
             "/v1/appointments", 
             this.appointmentController.updateAppointment.bind(this.appointmentController)

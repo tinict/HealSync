@@ -6,11 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 export default function TableReExaminationSchedule() {
     const [appointments, setAppointments] = React.useState([]);
     const userInfo = useSelector(state => state.auth.user);
-    const [editModalOpen, setEditModalOpen] = React.useState(false);
-    const [selectedDate, setSelectedDate] = React.useState(null);
-    const [selectedTimeSlot, setSelectedTimeSlot] = React.useState('');
-    const [timeSlots, setTimeSlots] = React.useState([]);
-    const [selectedAppointment, setSelectedAppointment] = React.useState([]);
 
     const fetchApiPatients = () => {
         axios.get(`http://localhost:5002/api/v1/re-examination-schedules?doctor_id=${userInfo.user.identity_id}`)
@@ -31,64 +26,6 @@ export default function TableReExaminationSchedule() {
         5: { text: "Yêu cầu đổi lịch", color: "red" },
     };
 
-    const handleChangeAppointment = (appointment) => {
-        setSelectedAppointment(appointment);
-        setEditModalOpen(true);
-    };
-
-    const handleCloseEditModal = () => {
-        setEditModalOpen(false);
-    };
-
-    const getTimeSlots = () => {
-        axios.get("http://localhost:5002/api/v1/timeslots", {
-            params: {
-                doctor_id: userInfo.user.identity_id,
-                datework: selectedDate,
-                typeSchedule: 1
-            }
-        })
-            .then((res) => {
-                setTimeSlots(res.data);
-            })
-    };
-
-    const confirmAPIReExaminationSchedule = () => {
-        axios.put("http://localhost:5002/api/v1/re-examination-schedules", {
-            appointment_id: selectedAppointment.appointmentEntity.appointment_id,
-            timeslot_id: selectedTimeSlot.timeslot_id,
-            status: 1   
-        });
-    };
-
-    React.useEffect(() => {
-        getTimeSlots();
-    }, [selectedDate]);
-
-    const handleDateChange = (event) => {
-        setSelectedDate(event.target.value);
-    };
-
-    const handleTimeSlotChange = (event) => {
-        setSelectedTimeSlot(event.target.value);
-    };
-
-    const handleCancelEditModal = () => {
-        axios.put("http://localhost:5002/api/v1/re-examination-schedules", {
-            appointment_id: selectedAppointment.appointmentEntity.appointment_id,
-            status: 3   
-        });
-
-        setEditModalOpen(false);
-        fetchApiPatients();
-    };
-
-    const handleChange = () => {
-        confirmAPIReExaminationSchedule();
-        setEditModalOpen(false);
-        fetchApiPatients();
-    };
-
     return (
         <TableContainer component={Paper}>
             <Table>
@@ -106,7 +43,6 @@ export default function TableReExaminationSchedule() {
                         <TableCell>Thời gian bắt khám</TableCell>
                         <TableCell>Thời gian kết thúc</TableCell>
                         <TableCell>Trạng thái</TableCell>
-                        <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -128,72 +64,10 @@ export default function TableReExaminationSchedule() {
                                     {statusMap[appointment.status]?.text}
                                 </span>
                             </TableCell>
-                            <TableCell>
-                                <button
-                                    disabled={appointment.status !== 5}
-                                    onClick={() => handleChangeAppointment(appointment)}
-                                    className={`px-2 py-1 text-xs font-semibold rounded-full ${appointment.status === 5 ? 'bg-blue-500 text-white' : 'bg-gray-500 text-gray-200'}`}
-                                >
-                                    Thay đổi lịch
-                                </button>
-                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
             </Table>
-            <Modal
-                open={editModalOpen}
-                onClose={() => setEditModalOpen(false)}
-                aria-labelledby="edit-modal-title"
-                aria-describedby="edit-modal-description"
-            >
-                <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Đổi lịch tái khám
-                    </Typography>
-                    <TextField
-                        id="date"
-                        label="Chọn ngày tái khám"
-                        type="date"
-                        value={selectedDate}
-                        onChange={handleDateChange}
-                        fullWidth
-                        sx={{ mt: 2 }}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
-                    {selectedDate && (
-                        <FormControl fullWidth sx={{ mt: 2 }}>
-                            <InputLabel id="time-slot-label">Chọn khung giờ khám</InputLabel>
-                            <Select
-                                labelId="time-slot-label"
-                                id="time-slot-select"
-                                value={selectedTimeSlot}
-                                onChange={handleTimeSlotChange}
-                                label="Chọn khung giờ khám"
-                            >
-                                {timeSlots.map((timeSlot, index) => (
-                                    <MenuItem key={index} value={timeSlot}>
-                                        {timeSlot.starttime} - {timeSlot.endtime}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    )}
-                    <div>
-                        <Button variant="contained" onClick={handleChange}>
-                            Xác nhận đổi lịch
-                        </Button>
-                        <Button variant="contained" onClick={handleCancelEditModal}>
-                            Hủy lịch
-                        </Button>
-                        <Button variant="contained" onClick={handleCloseEditModal}>
-                            Đóng
-                        </Button>
-                    </div>
-                </Box>
-            </Modal>
         </TableContainer>
     );
 };

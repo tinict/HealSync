@@ -19,7 +19,7 @@ const ReExaminationSchedule = () => {
     useEffect(() => {
         APIAppointment();
         // APIStatusAppointment();
-    }, [])
+    }, []);
 
     function APIAppointment() {
         console.log(customerProfile);
@@ -40,7 +40,7 @@ const ReExaminationSchedule = () => {
                 }).filter(appointment => appointment !== null);
                 setAppointments(transformedAppointments); 
             })
-    }
+    };
 
     function APIStatusAppointment() {
         console.log(customerProfile);
@@ -49,14 +49,14 @@ const ReExaminationSchedule = () => {
                 console.log(res.data);
                 setStatusAppointment(res.data);
             })
-    }
+    };
 
     function fetchUpdateStatus(appointment_id, status) {
         return axios.post("http://localhost:5002/api/v1/appointments/status", {
             appointment_id,
             status
         })
-    }
+    };
 
     const handleEventClick = (info) => {
         setSelectedEvent(info.event);

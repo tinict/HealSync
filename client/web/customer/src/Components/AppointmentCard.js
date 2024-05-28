@@ -94,6 +94,7 @@ const AppointmentCard = ({ appointment }) => {
                     <Card.Title>Giấy hẹn tái khám</Card.Title>
                     <Card.Text>
                         <strong>Mã bệnh nhân:</strong> {appointment.appointmentEntity.appointment_id}<br />
+                        <strong>Số thứ tự khám:</strong> {appointment.ordinalNumber}<br />
                         <strong>Họ tên người bệnh:</strong> {appointment.appointmentEntity.examinationRecordEntity.firstname} {appointment.appointmentEntity.examinationRecordEntity.lastname}<br />
                         <strong>Giới tính:</strong> {appointment.appointmentEntity.examinationRecordEntity.gender}<br />
                         <strong>Ngày sinh:</strong> {appointment.appointmentEntity.examinationRecordEntity.dob}<br />

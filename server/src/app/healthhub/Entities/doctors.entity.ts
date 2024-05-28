@@ -57,7 +57,7 @@ export class DoctorEntity extends BaseEntity {
     @Column({ type: "nvarchar", length: 100, nullable: true })
     workspace!: string;
 
-    @Column({ type: "varchar", length: 100, nullable: true })
+    @Column({ type: "text", nullable: true })
     experience!: string;
 
     @Column({ type: "varchar", length: 100, nullable: true })

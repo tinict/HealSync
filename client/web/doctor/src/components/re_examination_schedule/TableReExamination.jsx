@@ -54,11 +54,15 @@ export default function TableReExamination() {
     };
 
     const confirmAPIReExaminationSchedule = () => {
-        axios.put("http://localhost:5002/api/v1/re-examination-schedules", {
-            appointment_id: selectedAppointment.appointmentEntity.appointment_id,
-            timeslot_id: selectedTimeSlot.timeslot_id,
-            status: 1   
-        });
+        axios.get(`http://localhost:5002/api/v1/appointment/ordinal-number/${selectedAppointment.appointmentEntity.appointment_id}`)
+            .then((res) => {
+                axios.put("http://localhost:5002/api/v1/re-examination-schedules", {
+                    appointment_id: selectedAppointment.appointmentEntity.appointment_id,
+                    timeslot_id: selectedTimeSlot.timeslot_id,
+                    status: 1,
+                    ordinalNumber: res.data.ordinalNumber
+                })
+            });
     };
 
     React.useEffect(() => {
@@ -76,7 +80,7 @@ export default function TableReExamination() {
     const handleCancelEditModal = () => {
         axios.put("http://localhost:5002/api/v1/re-examination-schedules", {
             appointment_id: selectedAppointment.appointmentEntity.appointment_id,
-            status: 3   
+            status: 3
         });
 
         setEditModalOpen(false);

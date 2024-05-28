@@ -33,11 +33,16 @@ export default function TableApointment() {
     };
 
     const confirmAPIReExaminationSchedule = () => {
-        axios.put("http://localhost:5002/api/v1/appointments", {
-            appointment_id: selectedAppointment.appointment_id,
-            timeslot_id: selectedTimeSlot.timeslot_id,
-            status_appointment: 1
-        });
+        console.log(selectedAppointment);
+        axios.get(`http://localhost:5002/api/v1/appointment/ordinal-number/${selectedAppointment.appointment_id}`)
+            .then((res) => {
+                axios.put("http://localhost:5002/api/v1/appointments", {
+                    appointment_id: selectedAppointment.appointment_id,
+                    timeslot_id: selectedTimeSlot.timeslot_id,
+                    status_appointment: 1,
+                    ordinalNumber: res.data.ordinalNumber
+                });
+            })
     };
 
     const handleDateChange = (event) => {
@@ -45,6 +50,7 @@ export default function TableApointment() {
     };
 
     const handleTimeSlotChange = (event) => {
+        console.log(event.target.value);
         setSelectedTimeSlot(event.target.value);
     };
 
@@ -53,7 +59,7 @@ export default function TableApointment() {
             params: {
                 doctor_id: userInfo.user.identity_id,
                 datework: selectedDate,
-                typeSchedule: 1
+                typeSchedule: selectedAppointment.typeSchedule
             }
         })
             .then((res) => {
@@ -103,12 +109,6 @@ export default function TableApointment() {
 
     return (
         <>
-            <TextField
-                label="Tìm kiếm"
-                value={searchTerm}
-                onChange={handleChangeSearch}
-                sx={{ marginBottom: '20px' }}
-            />
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
@@ -190,6 +190,9 @@ export default function TableApointment() {
                                     onChange={handleTimeSlotChange}
                                     label="Chọn khung giờ khám"
                                 >
+                                    <MenuItem>
+                                        Vui lòng bạn chọn khung giờ khám
+                                    </MenuItem>
                                     {timeSlots.map((timeSlot, index) => (
                                         <MenuItem key={index} value={timeSlot}>
                                             {timeSlot.starttime} - {timeSlot.endtime}

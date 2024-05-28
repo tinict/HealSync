@@ -176,15 +176,34 @@ export class AppointmentService {
         }
     };
 
-    async updateAppointment(appointment_id: any, updatedData: Partial<AppointmentEntity>) {
+    async updateAppointment(appointment_id: any, updatedData: any) {
         try {
+            console.log(updatedData);
+
             const appointment = await AppointmentRepository.findOne({ where: { appointment_id: Number(appointment_id) } });
 
-            if (!appointment) {
-                throw new Error('Appointment not found');
+            if (!appointment) return;
+
+            if (updatedData.appointment_id !== undefined) {
+                appointment.appointment_id = updatedData.appointment_id;
             }
 
-            Object.assign(appointment, updatedData);
+            if (updatedData.status_appointment !== undefined) {
+                appointment.status_appointment = updatedData.status_appointment;
+            }
+
+            if (updatedData.timeslot_id !== undefined) {
+                const timeslot = await TimeSlotRepository.findOne({ where: { timeslot_id: Number(updatedData.timeslot_id) } });
+                if (!timeslot) return;
+                appointment.timeSlotEntity = timeslot;
+
+                // const ordinalNumber_appointment = await AppointmentRepository.count({ where: { timeSlotEntity: timeslot, status_appointment: 1 } });
+                // appointment.ordinalNumber = ordinalNumber_appointment + 1;
+            }
+
+            if (updatedData.ordinalNumber !== undefined) {
+                appointment.ordinalNumber = updatedData.ordinalNumber;
+            }
 
             const updatedAppointment = await AppointmentRepository.save(appointment);
 
@@ -207,14 +226,43 @@ export class AppointmentService {
 
             console.log(appointment.timeSlotEntity);
 
-            const ordinalNumber_appointment = await AppointmentRepository.count({ where: { timeSlotEntity: appointment.timeSlotEntity, status_appointment: 1 } });
-            const ordinalNumber_reExamination = await ReExaminationScheduleRepository.count({ where: { timeSlotEntity: appointment.timeSlotEntity, status: 1 } });
+            // const ordinalNumber_appointment = await AppointmentRepository.count({ where: { timeSlotEntity: appointment.timeSlotEntity, status_appointment: 1 } });
+            
+            const result = await AppointmentRepository
+                .createQueryBuilder('tbl_appointments')
+                .select('MAX(tbl_appointments.ordinalNumber)', 'maxOrdinalNumber')
+                .leftJoin('tbl_appointments.timeSlotEntity', 'tbl_timeslot')
+                .where('tbl_appointments.timeslot_id = :timeslot_id AND tbl_appointments.status_appointment = :status', {
+                    timeslot_id: appointment.timeSlotEntity.timeslot_id,
+                    status: 1
+                })
+                .getRawOne();
 
-            let ordinalNumber = ordinalNumber_appointment + ordinalNumber_reExamination;
+            const maxOrdinalNumber = result?.maxOrdinalNumber;
+            console.log('Max ordinal number:', maxOrdinalNumber);
 
-            if (ordinalNumber === 0) ordinalNumber = 1;
+            // const ordinalNumber_reExamination = await ReExaminationScheduleRepository.count({ where: { timeSlotEntity: appointment.timeSlotEntity, status: 1 } });
+            
+            const resultRe = await ReExaminationScheduleRepository
+                .createQueryBuilder('tbl_re_examination_schedules')
+                .select('MAX(tbl_re_examination_schedules.ordinalNumber)', 'maxOrdinalNumberRe')
+                .leftJoin('tbl_re_examination_schedules.timeSlotEntity', 'tbl_timeslot')
+                .where('tbl_timeslot.timeslot_id = :timeslot_id AND tbl_re_examination_schedules.status = :status', {
+                    timeslot_id: appointment.timeSlotEntity.timeslot_id,
+                    status: 1
+                })
+                .getRawOne();
 
-            return ordinalNumber;
+            const maxOrdinalNumberRe = resultRe?.maxOrdinalNumberRe;
+            console.log('Max ordinal number:', maxOrdinalNumberRe);
+
+            const ordinalNumberLast = Math.max(maxOrdinalNumber, maxOrdinalNumberRe) + 1;
+
+            // let ordinalNumber = ordinalNumber_appointment + ordinalNumber_reExamination;
+
+            // if (ordinalNumber === 0) ordinalNumber = 1;
+
+            return ordinalNumberLast;
         } catch (error: any) {
             throw error;
         }
@@ -268,14 +316,44 @@ export class AppointmentService {
                 throw new Error('Timeslot not found');
             }
 
-            const ordinalNumber_appointment = await AppointmentRepository.count({ where: { timeSlotEntity: timeslot, status_appointment: 1 } });
-            const ordinalNumber_reExamination = await ReExaminationScheduleRepository.count({ where: { timeSlotEntity: timeslot, status: 1 } });
+            // const ordinalNumber_appointment = await AppointmentRepository.count({ where: { timeSlotEntity: timeslot, status_appointment: 1 } });
 
-            let ordinalNumber = ordinalNumber_appointment + ordinalNumber_reExamination;
+            const result = await AppointmentRepository
+                .createQueryBuilder('tbl_appointments')
+                .select('MAX(tbl_appointments.ordinalNumber)', 'maxOrdinalNumber')
+                .leftJoin('tbl_appointments.timeSlotEntity', 'tbl_timeslot')
+                .where('tbl_timeslot.timeslot_id = :timeslot_id AND tbl_appointments.status_appointment = :status', {
+                    timeslot_id: timeslot.timeslot_id,
+                    status: 1
+                })
+                .getRawOne();
 
-            if (ordinalNumber === 0) ordinalNumber = 1;
+            const maxOrdinalNumber = result?.maxOrdinalNumber;
+            console.log('Max ordinal number:', maxOrdinalNumber);
 
-            return ordinalNumber;
+
+            // const ordinalNumber_reExamination = await ReExaminationScheduleRepository.count({ where: { timeSlotEntity: timeslot, status: 1 } });
+
+            const resultRe = await ReExaminationScheduleRepository
+                .createQueryBuilder('tbl_re_examination_schedules')
+                .select('MAX(tbl_re_examination_schedules.ordinalNumber)', 'maxOrdinalNumberRe')
+                .leftJoin('tbl_re_examination_schedules.timeSlotEntity', 'tbl_timeslot')
+                .where('tbl_timeslot.timeslot_id = :timeslot_id AND tbl_re_examination_schedules.status = :status', {
+                    timeslot_id: timeslot.timeslot_id,
+                    status: 1
+                })
+                .getRawOne();
+
+            const maxOrdinalNumberRe = resultRe?.maxOrdinalNumberRe;
+            console.log('Max ordinal number:', maxOrdinalNumberRe);
+
+            const ordinalNumberLast = Math.max(maxOrdinalNumber, maxOrdinalNumberRe) + 1;
+
+            // let ordinalNumber = ordinalNumber_appointment + ordinalNumber_reExamination;
+
+            // if (ordinalNumber === 0) ordinalNumber = 1;
+
+            return ordinalNumberLast;
         } catch (error: any) {
             throw error;
         }
@@ -308,7 +386,7 @@ export class AppointmentService {
             if (!timeslot) return null;
             const reAppointments = await ReExaminationScheduleRepository.find({ where: { timeSlotEntity: timeslot.timeSlotEntity } });
 
-            if(reAppointments !== null) {
+            if (reAppointments !== null) {
                 for (const reAppointment of reAppointments) {
                     reAppointment.status = 5;
                     await ReExaminationScheduleRepository.save(reAppointment);
@@ -318,9 +396,9 @@ export class AppointmentService {
             for (const customer of listCustomer) {
                 const appointment = await AppointmentRepository.findOne({ where: { appointment_id: customer.appointmentEntity.appointment_id } });
                 if (!appointment) continue;
-    
+
                 appointment.status_appointment = 4;
-    
+
                 await AppointmentRepository.save(appointment);
             }
         } catch (error: any) {

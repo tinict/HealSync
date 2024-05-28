@@ -69,6 +69,7 @@ export class AppointmentController {
 
     async updateAppointment(req: Request, res: Response) {
         try {
+            console.log(req.body);
             const appointment = await this.appointmentService.updateAppointment(req.body.appointment_id, req.body);
             return res.status(200).json(appointment);
         } catch (error: any) {

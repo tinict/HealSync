@@ -29,7 +29,8 @@ export class AlgoliaController {
                     'doctorEntity.lastname', 
                     'doctorEntity.specialty', 
                     'doctorEntity.qualification', 
-                    'doctorEntity.experience'
+                    'doctorEntity.experience',
+                    'doctorEntity.degree'
                 ]
             );
 

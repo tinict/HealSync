@@ -92,16 +92,6 @@ const RecordExamination = () => {
                     <h1 className="text-center">Danh sách bệnh án</h1>
                 </Col>
             </Row>
-            <Row className="mb-4">
-                <Col md={{ span: 6, offset: 3 }}>
-                    <Form.Control
-                        type="text"
-                        placeholder="Tìm kiếm theo mã bệnh án ..."
-                        value={filter}
-                        onChange={e => setFilter(e.target.value)}
-                    />
-                </Col>
-            </Row>
             {renderRecords()}
         </Container>
     );

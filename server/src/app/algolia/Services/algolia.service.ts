@@ -20,13 +20,23 @@ export class AlgoliaService {
             console.log(saveResult.objectIDs);
 
             await index.setSettings({
-                searchableAttributes: attributeSearch
+                searchableAttributes: attributeSearch,
+                attributesForFaceting: ['searchable(degree)', 'searchable(specialty)', 'searchable(position)'],
+                customRanking: ['desc(create_at)', 'asc(firstname)', 'asc(lastname)'],
+                highlightPreTag: '<em>',
+                highlightPostTag: '</em>',
+                attributesToHighlight: ['experience', 'position'],
+                attributesToSnippet: ['experience:50'],
             });
 
             const searchResult = await index.search(
-                searchText, 
+                searchText,
                 {
-                    filters: userFilters
+                    filters: userFilters,
+                    highlightPreTag: '<em>',
+                    highlightPostTag: '</em>',
+                    attributesToHighlight: ['experience'],
+                    attributesToSnippet: ['experience:50'],
                 }
             );
 
@@ -35,5 +45,5 @@ export class AlgoliaService {
             console.error(error);
             throw error;
         }
-    }
-}
+    };
+};

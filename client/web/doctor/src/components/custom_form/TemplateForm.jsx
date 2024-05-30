@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Card, Button, Modal, Typography, TextField, Grid, CardContent, CardActions, IconButton, Box } from "@mui/material";
-import { UilPlus, UilTimes, UilEye, UilFileAlt, UilCalendarAlt, UilTrashAlt } from '@iconscout/react-unicons';
+import { UilPlus, UilTimes, UilEye, UilFileAlt, UilCalendarAlt, UilTrashAlt, UilEdit } from '@iconscout/react-unicons';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { templateform } from '../../features/templateFormSlice.js';
@@ -138,7 +138,7 @@ const TemplateManagement = () => {
                                     <UilEye />
                                 </IconButton>
                                 <IconButton onClick={() => editForm(template.pathname, template.name)}>
-                                    <UilEye />
+                                    <UilEdit />
                                 </IconButton>
                                 <IconButton onClick={() => deleteForm(template.pathname)}>
                                     <UilTrashAlt />

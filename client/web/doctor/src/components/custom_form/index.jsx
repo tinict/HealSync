@@ -21,32 +21,54 @@ const CustomForm = () => {
   const fname = queryParams.get('fname');
   const action = queryParams.get('action');
   const tname = queryParams.get('tname');
+  const [editor, setEditor] = useState(null);
 
   useEffect(() => {
-    const editor = grapesjs.init({
-      container: '#gjs',
-      plugins: [
-        grapesjsBlocksBasic,
-        grapesjsPresetWebpage,
-      ],
-    });
+    const initializeEditor = () => {
+      const editorInstance = grapesjs.init({
+        container: '#gjs',
+        plugins: [
+          grapesjsBlocksBasic,
+          grapesjsPresetWebpage,
+        ],
+      });
 
-    editor.on('component:update', () => {
-      setHtml(editor.getHtml());
-      setCss(editor.getCss());
-    });
+      editorInstance.BlockManager.add('Nhập nội dung', {
+        label: 'Input',
+        category: 'Forms',
+        attributes: { class: 'fa fa-square', title: 'Input' },
+        content: '<input type="text" placeholder="Input">',
+      });
 
-    editor.BlockManager.add('Nhập nội dung', {
-      label: 'Input',
-      category: 'Forms',
-      attributes: { class: 'fa fa-square', title: 'Input' },
-      content: '<input type="text" placeholder="Input">',
-    });
+      editorInstance.on('component:update', () => {
+        setHtml(editorInstance.getHtml());
+        setCss(editorInstance.getCss());
+      });
+
+      setEditor(editorInstance);
+    };
+
+    initializeEditor();
 
     return () => {
-      editor.destroy();
+      if (editor) {
+        editor.destroy();
+      }
     };
   }, []);
+
+  useEffect(() => {
+    if (editor && fname) {
+      generateContentForm();
+    }
+  }, [editor, fname]);
+
+  const deleteForm = (key) => {
+    axios.delete(`http://localhost:5003/api/v1/media/files?rf=${key}`)
+      .then(() => {
+        axios.delete(`http://localhost:5002/api/v1/forms?key=${key}`);
+      })
+  };
 
   const handleSaveFile = () => {
     axios.post('http://localhost:5003/api/v1/media/file/writehtml', {
@@ -59,6 +81,12 @@ const CustomForm = () => {
           "formname": formName,
           "filepath": res.data.key
         })
+          .then(() => {
+            if (action === 'edit') {
+              deleteForm(fname);
+            }
+            editor.destroy();
+          })
         navigate('/managerform');
       })
       .catch(error => {
@@ -72,6 +100,22 @@ const CustomForm = () => {
 
   const onBack = () => {
     navigate('/managerform');
+  };
+
+  const generateContentForm = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5003/api/v1/media/file?rf=${fname}`);
+      const { content } = response.data;
+      const styleStart = content.indexOf('<style>');
+      const styleEnd = content.indexOf('</style>');
+      const htmlContent = styleStart !== -1 && styleEnd !== -1 ? content.substring(styleEnd + 8) : content;
+      const cssContent = styleStart !== -1 && styleEnd !== -1 ? content.substring(styleStart + 7, styleEnd) : '';
+
+      editor.setComponents(htmlContent);
+      editor.setStyle(cssContent);
+    } catch (error) {
+      console.error('Failed to read file:', error);
+    }
   };
 
   return (

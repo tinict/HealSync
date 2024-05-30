@@ -18,7 +18,6 @@ const TemplateManagement = () => {
     const userInfo = useSelector(state => state.auth.user);
     const [showModalForm, setShowModalForm] = useState(false);
     const [fileContent, setFileContent] = useState("");
-
     const [toastOpen, setToastOpen] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
     const [toastType, setToastType] = useState('success');
@@ -97,7 +96,7 @@ const TemplateManagement = () => {
                 fetchFiles();
                 handleAction("Xóa biểu mẫu thành công!");
             })
-    }; 
+    };
 
     const editForm = (pathname, templatename) => {
         navigate(`/dynamicform?tname=${templatename}&&fname=${pathname}&&action=edit`);

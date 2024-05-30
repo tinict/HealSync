@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
@@ -8,8 +7,11 @@ import { dateScheduleDoctor } from '../Features/dateScheduleDoctorSlice';
 import { filterDoctor } from '../Features/filterDoctorSlice';
 
 function SubFilter() {
-    const currentDate = new Date();
-    const [date, setDate] = useState(currentDate);
+    const vnTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" });
+    const currentDate = new Date(vnTime);
+    const nextDate = new Date(currentDate);
+    nextDate.setDate(currentDate.getDate() + 1);
+    const [date, setDate] = useState(nextDate);
     const [scheduleTypeId, setScheduleTypeId] = useState(1);
     const dispatch = useDispatch();
 

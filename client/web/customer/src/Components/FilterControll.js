@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 function FilterControll({ onFilter }) {
     const [location, setLocation] = useState('');

@@ -43,6 +43,11 @@ const DoctorProfile = () => {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setDoctorInfo({ ...doctorInfo, [name]: value });
+  };
+
+  const handleKeyWordChange = (event) => {
+    const { name, value } = event.target;
+    setDoctorInfo({ ...doctorInfo, [name]: value });
     setKeySearch(event.target.value);
   };
 
@@ -60,11 +65,11 @@ const DoctorProfile = () => {
   const handleUpdateProfile = () => {
     let updatedExperience = doctorInfo.experience;
 
-    if (updatedExperience.includes('Từ khóa:')) {
+    if (updatedExperience && updatedExperience.includes('Từ khóa:')) {
       const keywordIndex = updatedExperience.indexOf('Từ khóa:');
       updatedExperience = updatedExperience.substring(0, keywordIndex) + 'Từ khóa: ' + keySearch;
     } else {
-      updatedExperience = updatedExperience + (updatedExperience ? '\n' : '') + 'Từ khóa: ' + keySearch;
+      updatedExperience = (updatedExperience ? updatedExperience + '\n' : '') + 'Từ khóa: ' + keySearch;
     }
 
     axios.put(
@@ -168,17 +173,6 @@ const DoctorProfile = () => {
                   label="Nơi làm việc"
                   name="workspace"
                   value={doctorInfo.workspace}
-                  onChange={handleInputChange}
-                  variant="outlined"
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Địa chỉ"
-                  name="address"
-                  value={doctorInfo.location}
                   onChange={handleInputChange}
                   variant="outlined"
                   margin="normal"
@@ -311,7 +305,7 @@ const DoctorProfile = () => {
                   label="Từ khóa tìm kiếm"
                   name="keySearch"
                   value={keySearch}
-                  onChange={handleInputChange}
+                  onChange={handleKeyWordChange}
                   variant="outlined"
                   margin="normal"
                   placeholder='Những câu từ khóa, câu hỏi liên quan đến chuyên ngành của bạn. Ví dụ: Tôi bị đau bụng, tôi bị xưng tay phải, ...'

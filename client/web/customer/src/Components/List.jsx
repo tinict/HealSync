@@ -10,19 +10,22 @@ import { FaCommentAlt } from 'react-icons/fa';
 import SubFilter from "./SubFilter.js";
 
 const List = () => {
+  const vnTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" });
+  const currentDate = new Date(vnTime);
+  const nextDate = new Date(currentDate);
+  nextDate.setDate(currentDate.getDate() + 1);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const getDoctors = useSelector(state => state.doctors);
   const [timeslots, setTimeSlots] = useState([]);
   const [generalAppointment, setGeneralAppointment] = useState({});
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
-  const vnTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" });
-  const currentDate = new Date(vnTime);
   const navigate = useNavigate();
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [feedbacks, setFeedbacks] = useState([]);
   const [doctor_id, setDoctorid] = useState(null);
   const [typeSchedule, setTypeScheduleid] = useState('1');
-  const [datework, setDatework] = useState(currentDate.toLocaleDateString('fr-CA'));
+  const formattedNextDate = nextDate.toLocaleDateString('fr-CA');
+  const [datework, setDatework] = useState(formattedNextDate);
   const customerProfile = useSelector(state => state.customer);
   const dispatch = useDispatch();
   // const appointment = useSelector((state) => state.appointment);

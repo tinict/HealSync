@@ -4,11 +4,11 @@ import moment from 'moment';
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { Modal, Button, TextField, Select, MenuItem, FormControl, InputLabel, FormHelperText, Grid, Box, Typography, Alert } from '@mui/material';
+import { Modal, Button, TextField, Select, MenuItem, FormControl, Grid, Box, Typography, Alert } from '@mui/material';
 import './tablescheduler.css';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import CancelAppointmentModal from './CancelAppointmentModal';
 import ToastMessage from '../ToastMessage';
 const localizer = momentLocalizer(moment);
@@ -108,6 +108,7 @@ const TableScheduler = () => {
             [fieldName]: value,
         }));
         if (isEditing) {
+            console.log(fieldName, value);
             setSelectedEvent(prevEvent => ({
                 ...prevEvent,
                 extendedProps: {
@@ -115,16 +116,39 @@ const TableScheduler = () => {
                     [fieldName]: value,
                 }
             }));
+            console.log(selectedEvent);
         }
     };
 
+    function formatTime(dateString) {
+        if (!dateString) {
+            return undefined;
+        }
+
+        const date = new Date(dateString);
+
+        if (isNaN(date.getTime())) {
+            return undefined;
+        }
+
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+
+        return `${hours}:${minutes}:${seconds}`;
+    };
+
     const APIUpdateEvent = async (event) => {
+        let starttime = formatTime(selectedEvent?.extendedProps?.start);
+        let endtime = formatTime(selectedEvent?.extendedProps?.end);
         return await axios.put(`http://localhost:5002/api/v1/timeslots/${event.extendedProps.timeslot_id}`, {
-            count_person: event.extendedProps.countPerson,
-            cost: event.extendedProps.price,
+            count_person: event?.extendedProps?.countPerson,
+            cost: event?.extendedProps?.price,
             localtion: event.extendedProps.location,
+            starttime: starttime,
+            endtime: endtime,
         });
-    }
+    };
 
     const handleModalSave = async () => {
         if (isEditing && selectedEvent) {
@@ -162,7 +186,7 @@ const TableScheduler = () => {
                                     price: eventData.cost,
                                     countPerson: eventData.count_person,
                                     location: eventData.localtion,
-                                    mode: eventData.scheduleEntity.scheduleTypeEntity.typeSchedule === 2 ? 'Tư vấn trực tuyến' : 'Khám tại phòng khán',
+                                    mode: eventData.scheduleEntity.scheduleTypeEntity.typeSchedule,
                                     doctor: eventData.scheduleEntity.doctorEntity,
                                     schedule_id: eventData.scheduleEntity.schedule_id,
                                     timeslot_id: eventData.timeslot_id,
@@ -212,6 +236,9 @@ const TableScheduler = () => {
 
             current.setDate(current?.getDate() + 1);
         }
+        setModalThanOneDay(false);
+        displayEventsOnCalendar();
+        handleAction("Lịch khám của bạn đã được tạo thành công !");
     };
 
     const handleEventResize = ({ event, start, end }) => {
@@ -255,7 +282,7 @@ const TableScheduler = () => {
                 price: item.cost,
                 countPerson: item.count_person,
                 location: item.localtion,
-                mode: item.scheduleEntity.typeSchedule === 1 ? 'Khám tại phòng khám' : 'Tư vấn trực tuyến',
+                mode: item.scheduleEntity.typeSchedule,
                 doctor: item.scheduleEntity.doctorEntity,
                 schedule_id: item.scheduleEntity.schedule_id,
                 timeslot_id: item.timeslot_id,
@@ -349,7 +376,7 @@ const TableScheduler = () => {
                 onSelectEvent={handleSelectEvent}
                 onEventResize={handleEventResize}
                 views={['day', 'week', 'month']}
-                eventPropGetter={(event, start, end, isSelected) => {
+                eventPropGetter={(event) => {
                     let newStyle = {
                         backgroundColor: "lightblue",
                         color: 'black',
@@ -357,7 +384,7 @@ const TableScheduler = () => {
                         border: "none"
                     };
 
-                    if (event.extendedProps.mode === 'Tư vấn trực tuyến') {
+                    if (event.extendedProps.mode === 2) {
                         newStyle.backgroundColor = "lightgreen";
                     }
 
@@ -375,16 +402,16 @@ const TableScheduler = () => {
                             <Typography><strong>Số lượng bệnh:</strong> {selectedEvent?.extendedProps?.countPerson}</Typography>
                             <Typography><strong>Giá khám:</strong> {selectedEvent?.extendedProps?.price}</Typography>
                             {
-                                selectedEvent?.extendedProps?.mode === 'Khám tại phòng khám' && (
+                                selectedEvent?.extendedProps?.mode === 1 && (
                                     <Typography><strong>Vị trí khám:</strong> {selectedEvent?.extendedProps?.location}</Typography>
                                 )
                             }
                             {
-                                selectedEvent?.extendedProps?.mode === 'Tư vấn trực tuyến' && (
+                                selectedEvent?.extendedProps?.mode === 2 && (
                                     <Typography><strong>Chú thích:</strong> {selectedEvent?.extendedProps?.location}</Typography>
                                 )
                             }
-                            <Typography><strong>Hình thức khám:</strong> {selectedEvent?.extendedProps?.mode}</Typography>
+                            <Typography><strong>Hình thức khám:</strong> {selectedEvent?.extendedProps?.mode ? 'Khám tại phòng khám' : 'Tư vấn trực tuyến'}</Typography>
                             <Typography><strong>Thời gian bắt đầu:</strong> {formatDateToInput(selectedEvent?.start).replace('T', ' ')}</Typography>
                             <Typography><strong>Thời gian kết thúc:</strong> {formatDateToInput(selectedEvent?.end).replace('T', ' ')}</Typography>
                         </div>
@@ -414,7 +441,7 @@ const TableScheduler = () => {
                                 )
                             }
                             {
-                                newEvent?.mode === 1 || selectedEvent?.extendedProps?.mode === 'Khám tại phòng khám' && (
+                                newEvent?.mode === 1 || selectedEvent?.extendedProps?.mode === 1 && (
                                     <Grid item xs={12}>
                                         <TextField
                                             fullWidth
@@ -425,8 +452,16 @@ const TableScheduler = () => {
                                     </Grid>
                                 )
                             }
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Vị trí khám"
+                                    value={isEditing ? (selectedEvent?.extendedProps?.location || '') : newEvent.location}
+                                    onChange={(e) => handleModalInputChange('location', e.target.value)}
+                                />
+                            </Grid>
                             {
-                                newEvent?.mode === 2 || selectedEvent?.extendedProps?.mode === 'Tư vấn trực tuyến' && (
+                                newEvent?.mode === 2 || selectedEvent?.extendedProps?.mode === 2 && (
                                     <Grid item xs={12}>
                                         <TextField
                                             fullWidth
@@ -519,7 +554,7 @@ const TableScheduler = () => {
                             <Typography><strong>Số lượng bệnh:</strong> {selectedEvent?.extendedProps?.countPerson}</Typography>
                             <Typography><strong>Giá khám:</strong> {selectedEvent?.extendedProps?.price}</Typography>
                             <Typography><strong>Vị trí khám:</strong> {selectedEvent?.extendedProps?.location}</Typography>
-                            <Typography><strong>Hình thức khám:</strong> {selectedEvent?.extendedProps?.mode}</Typography>
+                            <Typography><strong>Hình thức khám:</strong> {selectedEvent?.extendedProps?.mode ? 'Khám tại phòng khám' : 'Tư vấn trực tuyến'}</Typography>
                             <Typography><strong>Thời gian bắt đầu:</strong> {formatDateToInput(selectedEvent?.extendedProps?.start)}</Typography>
                             <Typography><strong>Thời gian kết thúc:</strong> {formatDateToInput(selectedEvent?.extendedProps?.end)}</Typography>
                         </div>

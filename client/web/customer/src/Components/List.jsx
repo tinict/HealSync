@@ -25,8 +25,8 @@ const List = () => {
   const [datework, setDatework] = useState(currentDate.toLocaleDateString('fr-CA'));
   const customerProfile = useSelector(state => state.customer);
   const dispatch = useDispatch();
-  const appointment = useSelector((state) => state.appointment);
-  const dateScheduleDoctor = useSelector((state) => state.dateScheduleDoctor);
+  // const appointment = useSelector((state) => state.appointment);
+  // const dateScheduleDoctor = useSelector((state) => state.dateScheduleDoctor);
   const [feedbackContent, setFeedbackContent] = useState('');
   const [isReplyFeedback, setReplyFeedback] = useState(false);
   const [selectedReplyFeedback, setSelectedReplyFeedback] = useState("");
@@ -34,18 +34,16 @@ const List = () => {
   const [isOnline, setOnline] = useState(true);
   const isLoggedIn = useSelector(state => state.auth.isAuthenticated);
 
-  console.log("TEST:" + isLoggedIn);
-
   useEffect(() => {
     if (datework && generalAppointment?.cost) {
       dispatch(setAppointment({
         date: datework,
         time: selectedTimeSlot,
         cost: generalAppointment?.cost,
-        doctor_id: selectedDoctor.doctorEntity.doctor_id,
-        doctor_name: selectedDoctor.doctorEntity.firstname + " " + selectedDoctor.doctorEntity.lastname,
-        location: selectedDoctor.doctorEntity.location,
-        url_picture: selectedDoctor.doctorEntity.url_picture,
+        doctor_id: selectedDoctor?.doctorEntity.doctor_id,
+        doctor_name: selectedDoctor?.doctorEntity?.firstname + " " + selectedDoctor?.doctorEntity?.lastname,
+        location: selectedDoctor?.doctorEntity?.workspace,
+        url_picture: selectedDoctor?.doctorEntity?.url_picture,
         typeSchedule: typeSchedule
       }));
     }
@@ -96,7 +94,7 @@ const List = () => {
       .catch(error => {
         console.error('Error fetching doctors:', error);
       });
-  }
+  };
 
   function APIQueryPeroid(query) {
     axios.get('http://localhost:5002/api/v1/timeslots/peroid', { params: query })
@@ -106,7 +104,7 @@ const List = () => {
       .catch(error => {
         console.error('Error fetching time slots:', error);
       });
-  }
+  };
 
   const handleSelectDoctor = (doctor) => {
     setSelectedDoctor(doctor);
@@ -223,7 +221,7 @@ const List = () => {
                       <Row className="align-items-center">
                         <Col xs="auto">
                           <img
-                            src={doctor.doctorEntity.url_picture}
+                            src={doctor?.doctorEntity?.url_picture}
                             alt="Bác sĩ"
                             className="rounded-circle"
                             style={{ width: '80px', height: '80px', border: '2px solid #007bff' }}
@@ -231,17 +229,16 @@ const List = () => {
                         </Col>
                         <Col>
                           <h5 className="mb-1">
-                            {doctor.doctorEntity.Degree} Bác sĩ {doctor.doctorEntity.firstname} {doctor.doctorEntity.lastname}
+                            {doctor?.doctorEntity?.degree} Bác sĩ {doctor?.doctorEntity?.firstname} {doctor?.doctorEntity?.lastname}
                           </h5>
-                          <p className="mb-1 text-muted">Chuyên khoa: {doctor.doctorEntity.specialty}</p>
-                          <p className="mb-1 text-muted">Chức danh: {doctor.doctorEntity.position}</p>
-                          <p className="mb-1 text-muted">Đơn vị công tác: {doctor.doctorEntity.workspace}</p>
-                          <p className="mb-1 text-muted">Địa điểm: {doctor.doctorEntity.location}</p>
+                          <p className="mb-1 text-muted">Chuyên khoa: {doctor?.doctorEntity?.specialty}</p>
+                          <p className="mb-1 text-muted">Chức danh: {doctor?.doctorEntity?.position}</p>
+                          <p className="mb-1 text-muted">Đơn vị công tác: {doctor?.doctorEntity?.workspace}</p>
                           <div className="d-flex align-items-center mt-2">
-                            <Button variant="primary" size="sm" onClick={(e) => { e.stopPropagation(); handleProfileDoctor(doctor.doctorEntity.doctor_id); }}>
+                            <Button variant="primary" size="sm" onClick={(e) => { e.stopPropagation(); handleProfileDoctor(doctor?.doctorEntity?.doctor_id); }}>
                               Thông tin về bác sĩ
                             </Button>
-                            <Button variant="link" className="text-primary ml-3 p-0" onClick={(e) => { handleFeedbackModal(doctor.doctorEntity.doctor_id); }}>
+                            <Button variant="link" className="text-primary ml-3 p-0" onClick={(e) => { handleFeedbackModal(doctor?.doctorEntity?.doctor_id); }}>
                               <FaCommentAlt className="mr-1" /> Phản hồi
                             </Button>
                           </div>

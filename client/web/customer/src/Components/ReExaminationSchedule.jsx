@@ -93,6 +93,7 @@ const ReExaminationSchedule = () => {
         2: { text: "Đã đến tái khám", color: "success" },
         3: { text: "Hủy tái khám", color: "danger" },
         4: { text: "Không đến tái khám", color: "danger" },
+        5: { text: "Đăng ký lịch tái khám", color: "danger" }
     };
 
     const handleClose = (appointmentId) => {
@@ -189,7 +190,7 @@ const ReExaminationSchedule = () => {
                                             <td>{appointment?.appointmentEntity.examinationRecordEntity?.lastname}</td>
                                             <td>{appointment?.appointmentEntity.examinationRecordEntity?.phone}</td>
                                             <td>{appointment?.appointmentEntity.examinationRecordEntity?.email}</td>
-                                            <td>{appointment?.appointmentEntity.examinationRecordEntity?.gender}</td>
+                                            <td>{appointment?.appointmentEntity.examinationRecordEntity?.gender === 1 ? "Nam" : "Nữ"}</td>
                                             <td>{appointment?.timeSlotEntity.scheduleEntity?.datework}</td>
                                             <td>{appointment?.timeSlotEntity.scheduleEntity.doctorEntity?.firstname} {appointment?.timeSlotEntity.scheduleEntity.doctorEntity?.lastname}</td>
                                             <td>{appointment?.timeSlotEntity.scheduleEntity.doctorEntity?.specialty}</td>

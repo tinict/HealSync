@@ -23,10 +23,11 @@ const DoctorProfile = () => {
     position: '',
     dob: '',
     address: '',
-    idCardNumber: ''
+    idCardNumber: '',
+    keySearch: '',
   });
-  const [avatar, setAvatar] = useState(null);
-
+  // const [avatar, setAvatar] = useState(null);
+  const [keySearch, setKeySearch] = useState('');
 
   const apiMe = async () => {
     const response = await axios.get(`http://localhost:5002/api/v1/doctors/profile/${userInfo.user.identity_id}`)
@@ -42,24 +43,35 @@ const DoctorProfile = () => {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setDoctorInfo({ ...doctorInfo, [name]: value });
+    setKeySearch(event.target.value);
   };
 
-  const handleAvatarChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatar(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  // const handleAvatarChange = (event) => {
+  //   const file = event.target.files[0];
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       setAvatar(reader.result);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
 
   const handleUpdateProfile = () => {
+    let updatedExperience = doctorInfo.experience;
+
+    if (updatedExperience.includes('Từ khóa:')) {
+      const keywordIndex = updatedExperience.indexOf('Từ khóa:');
+      updatedExperience = updatedExperience.substring(0, keywordIndex) + 'Từ khóa: ' + keySearch;
+    } else {
+      updatedExperience = updatedExperience + (updatedExperience ? '\n' : '') + 'Từ khóa: ' + keySearch;
+    }
+
     axios.put(
       "http://localhost:5002/api/v1/doctor/profile",
       {
         ...doctorInfo,
+        experience: updatedExperience,
         doctor_id: userInfo.user.identity_id
       }
     )
@@ -71,6 +83,20 @@ const DoctorProfile = () => {
   const handleChangeTab = (event, newValue) => {
     setTabValue(newValue);
   };
+
+  const handleSplitString = (text) => {
+    const keywordIndex = text.indexOf('Từ khóa:');
+    if (keywordIndex !== -1) {
+      return text.substring(keywordIndex + 9).trim();
+    }
+    return '';
+  };
+
+  useEffect(() => {
+    if (doctorInfo.experience) {
+      setKeySearch(handleSplitString(doctorInfo.experience));
+    }
+  }, [doctorInfo.experience]);
 
   return (
     <Container style={{ marginTop: '20px' }}>
@@ -277,6 +303,20 @@ const DoctorProfile = () => {
                   margin="normal"
                   multiline
                   rows={4}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Từ khóa tìm kiếm"
+                  name="keySearch"
+                  value={keySearch}
+                  onChange={handleInputChange}
+                  variant="outlined"
+                  margin="normal"
+                  placeholder='Những câu từ khóa, câu hỏi liên quan đến chuyên ngành của bạn. Ví dụ: Tôi bị đau bụng, tôi bị xưng tay phải, ...'
+                  multiline
+                  rows={2}
                 />
               </Grid>
             </>

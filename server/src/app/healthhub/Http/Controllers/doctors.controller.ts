@@ -12,12 +12,12 @@ export class DoctorController {
     constructor(
         @inject(TYPES.DoctorService)
         private doctorService: DoctorService
-    ) { }
+    ) { };
 
     async getAll(req: Request, res: Response) {
         const doctors = await DoctorRepository.find();
         res.status(200).json(doctors);
-    }
+    };
 
     async getDoctorByTime(req: Request, res: Response) {
         try {
@@ -32,7 +32,7 @@ export class DoctorController {
         } catch (error) {
             return res.status(500).send("Server Error");
         }
-    }
+    };
 
     async getDoctorById (req: Request, res: Response) {
         try {
@@ -41,7 +41,7 @@ export class DoctorController {
         } catch (error) {
             return res.status(500).send("Server Error");
         }
-    }
+    };
 
     async updateBioDoctor (req: Request, res: Response) {
         try {
@@ -51,7 +51,7 @@ export class DoctorController {
         } catch (error) {
             return res.status(500).send("Server Error");
         }
-    }
+    };
 
     async updateProfileDoctor (req: Request, res: Response) {
         try {
@@ -61,5 +61,5 @@ export class DoctorController {
         } catch (err: any) {
             return res.status(500).send("Server Error");
         }
-    }
+    };
 };

@@ -4,14 +4,13 @@ import moment from 'moment';
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { Modal, Button, TextField, Select, MenuItem, FormControl, InputLabel, FormHelperText, Grid, Box, Typography } from '@mui/material';
+import { Modal, Button, TextField, Select, MenuItem, FormControl, InputLabel, FormHelperText, Grid, Box, Typography, Alert } from '@mui/material';
 import './tablescheduler.css';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
 import CancelAppointmentModal from './CancelAppointmentModal';
 import ToastMessage from '../ToastMessage';
-
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
 
@@ -23,10 +22,11 @@ const TableScheduler = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpenCancel, setIsModalOpenCancel] = useState(false);
     const [listData, setListData] = useState([]);
-
+    const [modalThanOneDay, setModalThanOneDay] = useState(false);
     const [toastOpen, setToastOpen] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
     const [toastType, setToastType] = useState('success');
+    const [limited, setLimited] = useState(false);
 
     const handleAction = (message) => {
         setToastMessage(message);
@@ -38,11 +38,11 @@ const TableScheduler = () => {
         setToastOpen(false);
     };
 
-
     const userInfo = useSelector(state => state.auth.user);
 
     const handleEventDrop = ({ event, start, end }) => {
         const updatedEvents = events.map(item => (item.id === event.id ? { ...item, start, end } : item));
+        console.log(updatedEvents);
         setEvents(updatedEvents);
     };
 
@@ -50,19 +50,45 @@ const TableScheduler = () => {
         console.log('Navigate:', newDate, view, action);
     };
 
+    function isMoreThanOneDay(startDate, endDate) {
+        let start = new Date(startDate);
+        let end = new Date(endDate);
+
+        let diff = end - start;
+
+        let diffInDays = diff / (1000 * 60 * 60 * 24);
+
+        return diffInDays > 1;
+    };
+
     const handleSelectSlot = ({ start, end }) => {
-        setNewEvent({
-            id: uuidv4(),
-            start,
-            end,
-            price: '',
-            location: '',
-            mode: '',
-        });
-        setModalIsOpen(true);
+        const checkThanOneDay = isMoreThanOneDay(start, end);
+        console.log(isMoreThanOneDay(start, end));
+        if (!checkThanOneDay) {
+            setNewEvent({
+                id: uuidv4(),
+                start,
+                end,
+                price: '',
+                location: '',
+                mode: 0,
+            });
+            setModalIsOpen(true);
+        } else {
+            setNewEvent({
+                id: uuidv4(),
+                start,
+                end,
+                price: '',
+                location: '',
+                mode: 0,
+            });
+            setModalThanOneDay(true);
+        }
     };
 
     const handleSelectEvent = (event) => {
+        console.log(event);
         setSelectedEvent(event);
         setNewEvent(event.extendedProps);
         setModalIsOpen(true);
@@ -73,6 +99,7 @@ const TableScheduler = () => {
         setNewEvent({});
         setSelectedEvent(null);
         setIsEditing(false);
+        setLimited(false);
     };
 
     const handleModalInputChange = (fieldName, value) => {
@@ -125,7 +152,7 @@ const TableScheduler = () => {
                         const startDate = new Date(`${eventData.scheduleEntity.datework}T${eventData.starttime}`);
                         const endDate = new Date(`${eventData.scheduleEntity.datework}T${eventData.endtime}`);
 
-                        if (!isNaN(startDate.getDate()) && !isNaN(endDate.getDate())) {
+                        if (!isNaN(startDate?.getDate()) && !isNaN(endDate?.getDate())) {
                             const event = {
                                 id: uuidv4(),
                                 title: `Doctor: ${eventData.scheduleEntity.doctorEntity.doctor_id} - Location: ${eventData.localtion}`,
@@ -135,7 +162,7 @@ const TableScheduler = () => {
                                     price: eventData.cost,
                                     countPerson: eventData.count_person,
                                     location: eventData.localtion,
-                                    mode: eventData.scheduleEntity.scheduleTypeEntity.schedule_type_name === 'online' ? 'Khám trực tuyến' : 'Khám tại đơn vị',
+                                    mode: eventData.scheduleEntity.scheduleTypeEntity.typeSchedule === 2 ? 'Tư vấn trực tuyến' : 'Khám tại phòng khán',
                                     doctor: eventData.scheduleEntity.doctorEntity,
                                     schedule_id: eventData.scheduleEntity.schedule_id,
                                     timeslot_id: eventData.timeslot_id,
@@ -152,7 +179,43 @@ const TableScheduler = () => {
         }
     };
 
+    const handleCreateMutipleAppointment = async () => {
+        console.log(newEvent.start, newEvent.end);
+
+        console.log(newEvent.start, newEvent.end);
+
+        const startTime = new Date(newEvent.start);
+        const endTime = new Date(newEvent.end);
+
+        let current = new Date(startTime);
+        const end = new Date(endTime);
+
+        while (current <= end) {
+            let currentStart = new Date(current);
+            let currentEnd = new Date(current);
+            currentEnd.setHours(endTime.getHours(), endTime.getMinutes());
+
+            console.log(currentStart.toISOString(), currentEnd.toISOString());
+
+            try {
+                await APITimeTable(
+                    currentStart.toISOString(),
+                    currentEnd.toISOString(),
+                    userInfo.user.identity_id,
+                    newEvent.location,
+                    newEvent.countPerson,
+                    newEvent.price
+                );
+            } catch (error) {
+                continue;
+            }
+
+            current.setDate(current?.getDate() + 1);
+        }
+    };
+
     const handleEventResize = ({ event, start, end }) => {
+        console.log({ event, start, end });
         const updatedEvents = events.map(item => (item.id === event.id ? { ...item, start, end } : item));
         setEvents(updatedEvents);
     };
@@ -192,7 +255,7 @@ const TableScheduler = () => {
                 price: item.cost,
                 countPerson: item.count_person,
                 location: item.localtion,
-                mode: item.scheduleEntity.typeSchedule === 1 ? 'Khám tại đơn vị' : 'Khám trực tuyến',
+                mode: item.scheduleEntity.typeSchedule === 1 ? 'Khám tại phòng khám' : 'Tư vấn trực tuyến',
                 doctor: item.scheduleEntity.doctorEntity,
                 schedule_id: item.scheduleEntity.schedule_id,
                 timeslot_id: item.timeslot_id,
@@ -249,11 +312,7 @@ const TableScheduler = () => {
     const handleModalEdit = async () => {
         const listData = await APICheckTimeslot(selectedEvent.extendedProps.timeslot_id);
         if (listData.data.length !== 0) {
-            // await APIDeleteTimeslot(selectedEvent.extendedProps.timeslot_id);
-            // const updatedEvents = events.filter(event => event.id !== selectedEvent.id);
-            // setEvents(updatedEvents);
-            // setModalIsOpen(false);
-            // setSelectedEvent(null);
+            setLimited(true);
             handleAction("Lịch khám này đã có bệnh nhân đăng ký. Thông tin sẽ bị hạn chế chỉnh sửa !");
         }
         setIsEditing(true);
@@ -265,6 +324,14 @@ const TableScheduler = () => {
 
     const closeModalCancel = () => {
         setIsModalOpenCancel(false);
+    };
+
+    const formatDateToInput = (date) => {
+        if (!date) return '';
+        const d = new Date(date);
+        const offset = d.getTimezoneOffset();
+        d.setMinutes(d.getMinutes() - offset);
+        return d.toISOString().slice(0, 16);
     };
 
     return (
@@ -281,7 +348,7 @@ const TableScheduler = () => {
                 onSelectSlot={handleSelectSlot}
                 onSelectEvent={handleSelectEvent}
                 onEventResize={handleEventResize}
-                views={['week', 'day', 'month']}
+                views={['day', 'week', 'month']}
                 eventPropGetter={(event, start, end, isSelected) => {
                     let newStyle = {
                         backgroundColor: "lightblue",
@@ -290,7 +357,7 @@ const TableScheduler = () => {
                         border: "none"
                     };
 
-                    if (event.extendedProps.mode === 'Khám trực tuyến') {
+                    if (event.extendedProps.mode === 'Tư vấn trực tuyến') {
                         newStyle.backgroundColor = "lightgreen";
                     }
 
@@ -301,17 +368,166 @@ const TableScheduler = () => {
                 }}
             />
             <Modal open={modalIsOpen} onClose={handleModalClose} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Box sx={{ width: 400, bgcolor: 'background.paper', p: 2 }}>
-                    <Typography variant="h5">Lịch khám</Typography>
+                <Box sx={{ width: 600, bgcolor: 'background.paper', p: 2 }}>
+                    <Typography variant="h5">Tạo lịch khám</Typography>
+                    {selectedEvent && !isEditing ? (
+                        <div>
+                            <Typography><strong>Số lượng bệnh:</strong> {selectedEvent?.extendedProps?.countPerson}</Typography>
+                            <Typography><strong>Giá khám:</strong> {selectedEvent?.extendedProps?.price}</Typography>
+                            {
+                                selectedEvent?.extendedProps?.mode === 'Khám tại phòng khám' && (
+                                    <Typography><strong>Vị trí khám:</strong> {selectedEvent?.extendedProps?.location}</Typography>
+                                )
+                            }
+                            {
+                                selectedEvent?.extendedProps?.mode === 'Tư vấn trực tuyến' && (
+                                    <Typography><strong>Chú thích:</strong> {selectedEvent?.extendedProps?.location}</Typography>
+                                )
+                            }
+                            <Typography><strong>Hình thức khám:</strong> {selectedEvent?.extendedProps?.mode}</Typography>
+                            <Typography><strong>Thời gian bắt đầu:</strong> {formatDateToInput(selectedEvent?.start).replace('T', ' ')}</Typography>
+                            <Typography><strong>Thời gian kết thúc:</strong> {formatDateToInput(selectedEvent?.end).replace('T', ' ')}</Typography>
+                        </div>
+                    ) : (
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <Alert severity="warning">Các bác sĩ hãy chọn phù hợp số lượng bệnh nhân phù hợp trong ngày. Tránh trường hợp quá tải.</Alert>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Số lượng bệnh"
+                                    value={isEditing ? (selectedEvent?.extendedProps?.countPerson || '') : newEvent.countPerson}
+                                    onChange={(e) => handleModalInputChange('countPerson', e.target.value)}
+                                />
+                            </Grid>
+                            {
+                                !limited && (
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            label="Giá khám"
+                                            value={isEditing ? (selectedEvent?.extendedProps?.price || '') : newEvent.price}
+                                            onChange={(e) => handleModalInputChange('price', e.target.value)}
+                                        />
+                                    </Grid>
+                                )
+                            }
+                            {
+                                newEvent?.mode === 1 || selectedEvent?.extendedProps?.mode === 'Khám tại phòng khám' && (
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            label="Vị trí khám"
+                                            value={isEditing ? (selectedEvent?.extendedProps?.location || '') : newEvent.location}
+                                            onChange={(e) => handleModalInputChange('location', e.target.value)}
+                                        />
+                                    </Grid>
+                                )
+                            }
+                            {
+                                newEvent?.mode === 2 || selectedEvent?.extendedProps?.mode === 'Tư vấn trực tuyến' && (
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            label="Chú thích"
+                                            value={isEditing ? (selectedEvent?.extendedProps?.location || '') : newEvent.location}
+                                            onChange={(e) => handleModalInputChange('location', e.target.value)}
+                                        />
+                                    </Grid>
+                                )
+                            }
+                            {
+                                !limited && (
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            label="Thời gian bắt đầu"
+                                            type="datetime-local"
+                                            value={isEditing ? formatDateToInput(selectedEvent?.start) : formatDateToInput(newEvent.start)}
+                                            onChange={(e) => handleModalInputChange('start', e.target.value)}
+                                            InputLabelProps={{ shrink: true }}
+                                        />
+                                    </Grid>
+                                )
+                            }
+                            {
+                                !limited && (
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            label="Thời gian kết thúc"
+                                            type="datetime-local"
+                                            value={isEditing ? formatDateToInput(selectedEvent?.end) : formatDateToInput(newEvent.end)}
+                                            onChange={(e) => handleModalInputChange('end', e.target.value)}
+                                            InputLabelProps={{ shrink: true }}
+                                        />
+                                    </Grid>
+                                )
+                            }
+                            {
+                                !limited && (
+                                    <Grid item xs={12}>
+                                        <FormControl fullWidth>
+                                            <Select
+                                                value={newEvent.mode}
+                                                onChange={(e) => handleModalInputChange('mode', e.target.value)}
+                                            >
+                                                <MenuItem value={0}>Hình thức khám</MenuItem>
+                                                <MenuItem value={1}>Khám tại phòng khám</MenuItem>
+                                                <MenuItem value={2}>Tư vấn trực tuyến</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                )
+                            }
+                        </Grid>
+                    )}
+                    <Grid container justifyContent="flex-end" mt={2}>
+                        <Grid item>
+                            {!isEditing && (
+                                <>
+                                    <Button color="secondary" onClick={handleModalClose}>Đóng</Button>
+                                    {
+                                        selectedEvent?.extendedProps == null && (
+                                            <Button color="primary" onClick={handleModalSave}>Tạo lịch</Button>
+                                        )
+                                    }
+                                </>
+                            )}
+                            {isEditing && (
+                                <>
+                                    <Button color="secondary" onClick={handleModalClose}>Đóng</Button>
+                                    <Button color="error" onClick={handleDeleteEvent}>Xóa</Button>
+                                    <Button color="primary" onClick={handleModalSave}>Cập nhật</Button>
+                                </>
+                            )}
+                            {
+                                selectedEvent?.extendedProps != null && !isEditing && (
+                                    <Button color="primary" onClick={handleModalEdit}>Chỉnh sửa</Button>
+                                )
+                            }
+                        </Grid>
+                    </Grid>
+                </Box>
+            </Modal>
+            <Modal open={modalThanOneDay} onClose={() => setModalThanOneDay(false)} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Box sx={{ width: 600, bgcolor: 'background.paper', p: 2 }}>
+                    <Typography variant="h5">Tạo lịch khám cố định</Typography>
                     {selectedEvent && !isEditing ? (
                         <div>
                             <Typography><strong>Số lượng bệnh:</strong> {selectedEvent?.extendedProps?.countPerson}</Typography>
                             <Typography><strong>Giá khám:</strong> {selectedEvent?.extendedProps?.price}</Typography>
                             <Typography><strong>Vị trí khám:</strong> {selectedEvent?.extendedProps?.location}</Typography>
                             <Typography><strong>Hình thức khám:</strong> {selectedEvent?.extendedProps?.mode}</Typography>
+                            <Typography><strong>Thời gian bắt đầu:</strong> {formatDateToInput(selectedEvent?.extendedProps?.start)}</Typography>
+                            <Typography><strong>Thời gian kết thúc:</strong> {formatDateToInput(selectedEvent?.extendedProps?.end)}</Typography>
                         </div>
                     ) : (
                         <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <Alert severity="warning">Các bác sĩ hãy chọn phù hợp số lượng bệnh nhân phù hợp trong ngày. Tránh trường hợp quá tải.</Alert>
+                            </Grid>
                             <Grid item xs={12}>
                                 <TextField
                                     fullWidth
@@ -337,13 +553,36 @@ const TableScheduler = () => {
                                 />
                             </Grid>
                             <Grid item xs={12}>
+                                <Alert severity="warning">Các bác sĩ lưu ý chon lại thời gian muốn tạo lịch, bao gồm thời gian bắt đầu và kết thúc.</Alert>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Thời gian bắt đầu"
+                                    type="datetime-local"
+                                    value={isEditing ? formatDateToInput(selectedEvent?.extendedProps?.start) : formatDateToInput(newEvent.start)}
+                                    onChange={(e) => handleModalInputChange('start', e.target.value)}
+                                    InputLabelProps={{ shrink: true }}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Thời gian kết thúc"
+                                    type="datetime-local"
+                                    value={isEditing ? formatDateToInput(selectedEvent?.extendedProps?.end) : formatDateToInput(newEvent.end)}
+                                    onChange={(e) => handleModalInputChange('end', e.target.value)}
+                                    InputLabelProps={{ shrink: true }}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
                                 <FormControl fullWidth>
                                     <Select
                                         value={newEvent.mode}
                                         onChange={(e) => handleModalInputChange('mode', e.target.value)}
                                     >
-                                        <MenuItem>Hình thức khám</MenuItem>
-                                        <MenuItem value={1}>Khám tại cơ sở || phòng khám</MenuItem>
+                                        <MenuItem value={0}>Hình thức khám</MenuItem>
+                                        <MenuItem value={1}>Khám tại phòng khám</MenuItem>
                                         <MenuItem value={2}>Tư vấn trực tuyến</MenuItem>
                                     </Select>
                                 </FormControl>
@@ -354,18 +593,22 @@ const TableScheduler = () => {
                         <Grid item>
                             {!isEditing && (
                                 <>
-                                    <Button color="secondary" onClick={handleModalClose}>Đóng</Button>
-                                    <Button color="primary" onClick={handleModalSave}>Tạo lịch</Button>
+                                    <Button color="secondary" onClick={() => setModalThanOneDay(false)}>Đóng</Button>
+                                    <Button color="primary" onClick={handleCreateMutipleAppointment}>Tạo lịch</Button>
                                 </>
                             )}
                             {isEditing && (
                                 <>
-                                    <Button color="secondary" onClick={handleModalClose}>Đóng</Button>
+                                    <Button color="secondary" onClick={() => setModalThanOneDay(false)}>Đóng</Button>
                                     <Button color="error" onClick={handleDeleteEvent}>Xóa</Button>
                                     <Button color="primary" onClick={handleModalSave}>Cập nhật</Button>
                                 </>
                             )}
-                            <Button color="primary" onClick={handleModalEdit}>Chỉnh sửa</Button>
+                            {
+                                selectedEvent?.extendedProps != null && !isEditing && (
+                                    <Button color="primary" onClick={handleModalEdit}>Chỉnh sửa</Button>
+                                )
+                            }
                         </Grid>
                     </Grid>
                 </Box>

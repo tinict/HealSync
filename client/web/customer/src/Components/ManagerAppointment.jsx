@@ -25,7 +25,7 @@ const AppointmentPage = () => {
         axios.get(`http://localhost:5002/api/v1/appointments/customer/${customerProfile.customer_id}`)
             .then((res) => {
                 const transformedAppointments = res.data.map(appointment => ({
-                    title: appointment.firstname + ' ' + appointment.name,
+                    title: appointment.firstname + ' ' + appointment.lastname,
                     start: appointment.datework + 'T' + appointment.starttime,
                     end: appointment.datework + 'T' + appointment.endtime,
                     ...appointment

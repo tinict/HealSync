@@ -118,17 +118,6 @@ function PatientReExaminationInfoModal({ patientInfo }) {
                                 variant="outlined"
                             />
                         </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
-                                label="Ngày tái khám"
-                                value={patientInfo.followUpDate}
-                                InputProps={{
-                                    readOnly: true,
-                                }}
-                                variant="outlined"
-                            />
-                        </Grid>
                     </Grid>
                 </Box>
             </Modal>

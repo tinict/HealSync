@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { Modal, Button, Form, Card, ListGroup } from 'react-bootstrap';
-import { FaFileAlt, FaFilePdf, FaFileWord, FaFileExcel, FaEye } from 'react-icons/fa';
+import { FaFilePdf, FaEye } from 'react-icons/fa';
 
 const AppointmentCard = ({ appointment }) => {
     const customerProfile = useSelector(state => state.customer);
@@ -65,7 +65,14 @@ const AppointmentCard = ({ appointment }) => {
                     .then(() => {
                         setEditModalOpen(false);
                     })
-            })
+            });
+    };
+
+    const handleUpdateStatusReAppointment = (appointment_id, status) => {
+        axios.put('http://localhost:5002/api/v1/re-examination-schedules', {
+            "appointment_id": appointment_id,
+            "status": status
+        });
     };
 
     useEffect(() => {
@@ -96,7 +103,7 @@ const AppointmentCard = ({ appointment }) => {
                         <strong>Mã bệnh nhân:</strong> {appointment.appointmentEntity.appointment_id}<br />
                         <strong>Số thứ tự khám:</strong> {appointment.ordinalNumber}<br />
                         <strong>Họ tên người bệnh:</strong> {appointment.appointmentEntity.examinationRecordEntity.firstname} {appointment.appointmentEntity.examinationRecordEntity.lastname}<br />
-                        <strong>Giới tính:</strong> {appointment.appointmentEntity.examinationRecordEntity.gender}<br />
+                        <strong>Giới tính:</strong> {appointment.appointmentEntity.examinationRecordEntity.gender === 1 ? "Nam" : "Nữ"}<br />
                         <strong>Ngày sinh:</strong> {appointment.appointmentEntity.examinationRecordEntity.dob}<br />
                         <strong>Ngày khám:</strong> {appointment.appointmentEntity.timeSlotEntity.scheduleEntity.datework}<br />
                         <strong>Ngày khám:</strong> {appointment.endDay}<br />
@@ -109,6 +116,11 @@ const AppointmentCard = ({ appointment }) => {
                     {
                         appointment.status === 5 && (
                             <Button variant="primary" onClick={() => handleOpenEditModal(appointment.appointmentEntity.appointment_id, appointment.appointmentEntity.timeSlotEntity.scheduleEntity.doctorEntity.doctor_id)}>Đăng ký tái khám</Button>
+                        )
+                    }
+                    {
+                        appointment.status === 1 && (
+                            <Button variant="primary" onClick={() => handleUpdateStatusReAppointment(appointment.appointmentEntity.appointment_id, 5)}>Đổi lịch tái khám</Button>
                         )
                     }
                 </Card.Body>

@@ -34,14 +34,16 @@ function BookingSuccess() {
         })
     };
 
-    function convertToISOString(date, time) {
-        if (!Date.parse(`${date}T${time}`)) {
-            throw new Error(`Invalid date or time: ${date} ${time}`);
-        }
-        const dateTime = new Date(`${date}T${time}`);
-        const isoString = dateTime.toISOString();
+    const convertToISOString = (date, time) => {
+        const dateTimeString = `${date}T${time}`;
+        const dateTime = new Date(dateTimeString);
+    
+        const timezoneOffset = 7 * 60; 
+        const adjustedDateTime = new Date(dateTime.getTime() + timezoneOffset * 60 * 1000);
+    
+        const isoString = adjustedDateTime.toISOString();
         const isoStringWithTimeZone = isoString.slice(0, -1) + "+07:00";
-
+    
         return isoStringWithTimeZone;
     };
 
@@ -87,6 +89,7 @@ function BookingSuccess() {
     const APICalendar = async () => {
         const [starttime, endtime, timeslot_id] = examination.timeslot.split('-');
         const client_token = Cookies.get('client_token');
+        console.log(convertToISOString(examination.datetime, starttime));
         return await axios.post(
             'http://localhost:5000/api/v1/google/service/calendar/event',
             {

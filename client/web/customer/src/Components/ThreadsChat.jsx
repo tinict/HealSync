@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Form, Button, ListGroup, Navbar, Nav, Modal, Breadcrumb } from 'react-bootstrap';
-import { FaComment, FaStar } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
 
 export function ThreadsChat() {
     const [showModal, setShowModal] = useState(false);
@@ -10,6 +10,8 @@ export function ThreadsChat() {
     const [groupType, setGroupType] = useState('');
     const [content, setContent] = useState('');
     const navigate = useNavigate();
+    const customerProfile = useSelector(state => state.customer);
+
 
     const APIThreads = () => {
         axios.get('http://localhost:5006/api/v1/threads')
@@ -39,8 +41,9 @@ export function ThreadsChat() {
             group_type: groupType,
             content: content,
             creator: {
-                user_id: "test123",
-                user_name: "test123"
+                avatar: customerProfile.url_picture,
+                user_id: customerProfile.customer_id,
+                user_name: customerProfile.name
             }
         })
             .then(() => {

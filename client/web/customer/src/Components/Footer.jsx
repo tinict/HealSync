@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 function Footer() {
   return (
-    <footer className="bg-primary text-light py-5" style={{ bottom: 0, width: '100%' }}>
+    <footer className="bg-primary text-light py-5">
       <Container>
         <Row>
           <Col md={6}>
@@ -22,23 +22,23 @@ function Footer() {
           <Col md={6} className="d-flex flex-wrap justify-content-between">
             <div className="footer-column">
               <h4 className="footer-column-title">Dịch vụ</h4>
-              <ul className="list-unstyled">
-                <li>
+              <ul className="list-unstyled" style={{ paddingLeft: 0 }}>
+                <li style={{ marginBottom: '10px' }}>
                   <Link to="#services" className="text-light">
                     <Fa icon={faStethoscope} /> Khám tổng quát
                   </Link>
                 </li>
-                <li>
+                <li style={{ marginBottom: '10px' }}>
                   <Link to="#services" className="text-light">
                     <Fa icon={faExchangeAlt} /> Khám chuyển khoa
                   </Link>
                 </li>
-                <li>
+                <li style={{ marginBottom: '10px' }}>
                   <Link to="#services" className="text-light">
                     <Fa icon={faVideo} /> Khám trực tuyến
                   </Link>
                 </li>
-                <li>
+                <li style={{ marginBottom: '10px' }}>
                   <Link to="#services" className="text-light">
                     <Fa icon={faRobot} /> Tư vấn bằng trí tuệ nhân tạo
                   </Link>
@@ -47,18 +47,18 @@ function Footer() {
             </div>
             <div className="footer-column">
               <h4 className="footer-column-title">Liên hệ chúng tôi</h4>
-              <ul className="list-unstyled">
-                <li>
+              <ul className="list-unstyled" style={{ paddingLeft: 0 }}>
+                <li style={{ marginBottom: '10px' }}>
                   <a href="mailto:support@healthhub.com" className="text-light">
                     <Fa icon={faEnvelope} /> support@healthhub.com
                   </a>
                 </li>
-                <li>
+                <li style={{ marginBottom: '10px' }}>
                   <a href="mailto:appointment@healthhub.com" className="text-light">
                     <Fa icon={faCalendarAlt} /> appointment@healthhub.com
                   </a>
                 </li>
-                <li>
+                <li style={{ marginBottom: '10px' }}>
                   <a href="tel:+02223266232" className="text-light">
                     <Fa icon={faPhone} /> +022 2326 6232
                   </a>
@@ -68,9 +68,6 @@ function Footer() {
           </Col>
         </Row>
       </Container>
-      <div className="footer-bottom text-center">
-        <p className="mb-0">© 2024 HealthHub</p>
-      </div>
     </footer>
   );
 }

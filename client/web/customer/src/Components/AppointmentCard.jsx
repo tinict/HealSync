@@ -210,7 +210,7 @@ const AppointmentCard = ({ appointment }) => {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={closeModal}>
-                        Close
+                        Đóng
                     </Button>
                 </Modal.Footer>
             </Modal>

@@ -13,7 +13,6 @@ const AppointmentForm = () => {
   const appointmentCustomer = useSelector((state) => state.appointment);
   const navigate = useNavigate();
   const examination = useSelector((state) => state.examination);
-
   const [formDataAppointment, setFormDataAppointment] = useState({
     firstname: '',
     lastname: '',
@@ -30,6 +29,26 @@ const AppointmentForm = () => {
     career: '',
     guardian_phone_number: ''
   });
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    const newErrors = {};
+    if (!formDataAppointment.firstname) newErrors.firstname = "Họ đệm người bệnh là bắt buộc.";
+    if (!formDataAppointment.lastname) newErrors.lastname = "Tên người bệnh là bắt buộc.";
+    if (!formDataAppointment.email) newErrors.email = "Email là bắt buộc.";
+    if (!formDataAppointment.phone) newErrors.phone = "Số điện thoại là bắt buộc.";
+    if (!formDataAppointment.dob) newErrors.dob = "Ngày sinh là bắt buộc.";
+    if (!formDataAppointment.gender) newErrors.gender = "Giới tính là bắt buộc.";
+    if (!formDataAppointment.address) newErrors.address = "Địa chỉ là bắt buộc.";
+    if (!formDataAppointment.nation) newErrors.nation = "Dân tộc là bắt buộc.";
+    if (!formDataAppointment.career) newErrors.career = "Nghề nghiệp là bắt buộc.";
+    if (!formDataAppointment.idCardNumber) newErrors.idCardNumber = "Số CMND là bắt buộc.";
+    if (!formDataAppointment.guardianName) newErrors.guardianName = "Họ và tên của người giám hộ là bắt buộc.";
+    if (!formDataAppointment.guardian_phone_number) newErrors.guardian_phone_number = "Số điện thoại của người giám hộ là bắt buộc.";
+    if (!formDataAppointment.medicalHistory) newErrors.medicalHistory = "Mô tả tiểu sử người bệnh là bắt buộc.";
+    if (!formDataAppointment.reasonForConsultation) newErrors.reasonForConsultation = "Lý do khám là bắt buộc.";
+    return newErrors;
+  };
 
   async function APIPostFormAppointment() {
     if (!appointmentCustomer || !appointmentCustomer.time) {
@@ -97,11 +116,21 @@ const AppointmentForm = () => {
   };
 
   const handleSubmit = async () => {
-    await APIPostFormAppointment()
-    try {
-      await getPaymentUrl();
-    } catch (error) {
-      console.error('Error during payment process', error);
+    const formErrors = validate();
+
+    const isEmpty = (obj) => {
+      return Object.keys(obj).length === 0;
+    };
+
+    if (!isEmpty(formErrors)) {
+      alert('Bạn chưa điền đầy đủ thông tin của form hồ sơ khám điện tử');
+    } else {
+      try {
+        await APIPostFormAppointment();
+        await getPaymentUrl();
+      } catch (error) {
+        console.error('Error during payment process', error);
+      }
     }
   };
 
@@ -249,7 +278,6 @@ const AppointmentForm = () => {
                 </div>
               </div>
             </div>
-
             <div className="col-md-5 col-lg-4 theiaStickySidebar">
               <div className="card booking-card">
                 <div className="card-header">

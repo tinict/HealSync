@@ -36,6 +36,8 @@ const List = () => {
   const [selectedValue, setSelectedValue] = useState('1');
   const [isOnline, setOnline] = useState(true);
   const isLoggedIn = useSelector(state => state.auth.isAuthenticated);
+  const [selectedDoctorIndex, setSelectedDoctorIndex] = useState(null);
+  const [selectedTimeslot, setSelectedTimeslot] = useState(null);
 
   useEffect(() => {
     if (datework && generalAppointment?.cost) {
@@ -59,12 +61,11 @@ const List = () => {
       });
   };
 
-  const handleTimeSlotChange = (event) => {
-    const selectedValue = event.target.value;
+  const handleTimeSlotChange = (selectedValue) => {
     const [starttime, endtime, timeslot_id] = selectedValue.split('-');
     const timeSlotObject = { starttime, endtime, timeslot_id, doctor_id, datework };
     APIQueryPeroid(timeSlotObject);
-    setSelectedTimeSlot(event.target.value);
+    setSelectedTimeSlot(selectedValue);
   };
 
   const handleTypeScheduleChange = (event) => {
@@ -109,8 +110,9 @@ const List = () => {
       });
   };
 
-  const handleSelectDoctor = (doctor) => {
+  const handleSelectDoctor = (doctor, index) => {
     setSelectedDoctor(doctor);
+    setSelectedDoctorIndex(index);
     const query = { doctor_id: doctor.doctorEntity.doctor_id, datework, typeSchedule };
     console.log(doctor.doctorEntity.doctor_id);
     setDoctorid(doctor.doctorEntity.doctor_id);
@@ -195,6 +197,11 @@ const List = () => {
       })
   };
 
+  const handleTimeslotClick = (timeslotValue) => {
+    setSelectedTimeslot(timeslotValue);
+    handleTimeSlotChange(timeslotValue);
+  };
+
   return (
     <>
       <div className="container">
@@ -216,8 +223,9 @@ const List = () => {
               {getDoctors.doctors.length > 0 ? (
                 getDoctors.doctors.map((doctor, index) => (
                   <Card
-                    className="mb-3 shadow-sm border-primary rounded"
-                    onClick={() => handleSelectDoctor(doctor)}
+                    key={index}
+                    className={`mb-3 shadow-sm border-primary rounded ${selectedDoctorIndex === index ? 'bg-info' : ''}`}
+                    onClick={() => handleSelectDoctor(doctor, index)}
                     style={{ cursor: 'pointer' }}
                   >
                     <Card.Body>
@@ -339,7 +347,7 @@ const List = () => {
                       <div>
                         <div className="form-group mb-3">
                           <label className="form-label">Giờ khám:</label>
-                          <div>
+                          <Row>
                             {timeslots.map((timeslot, index) => (
                               <Col key={index} xs={12} sm={6} md={4} lg={3}>
                                 <div className="custom-radio" style={{ marginTop: '10px' }}>
@@ -349,7 +357,7 @@ const List = () => {
                                     name="timeSlot"
                                     className="timeslot-input"
                                     value={`${timeslot.starttime}-${timeslot.endtime}-${timeslot.timeslot_id}`}
-                                    onChange={handleTimeSlotChange}
+                                    onChange={() => handleTimeslotClick(`${timeslot.starttime}-${timeslot.endtime}-${timeslot.timeslot_id}`)}
                                     style={{ display: 'none' }}
                                   />
                                   <Form.Label
@@ -357,25 +365,26 @@ const List = () => {
                                     className="timeslot-box"
                                     style={{
                                       display: 'block',
-                                      width: 'auto',
+                                      width: '100%',
                                       padding: '10px',
                                       border: '1px solid #ddd',
                                       borderRadius: '5px',
                                       textAlign: 'center',
                                       cursor: 'pointer',
-                                      backgroundColor: '#f8f9fa',
-                                      transition: 'background-color 0.3s ease, border-color 0.3s ease',
-                                      color: '#333'
+                                      backgroundColor: selectedTimeslot === `${timeslot.starttime}-${timeslot.endtime}-${timeslot.timeslot_id}` ? '#007bff' : '#f8f9fa',
+                                      borderColor: selectedTimeslot === `${timeslot.starttime}-${timeslot.endtime}-${timeslot.timeslot_id}` ? '#007bff' : '#ddd',
+                                      color: selectedTimeslot === `${timeslot.starttime}-${timeslot.endtime}-${timeslot.timeslot_id}` ? '#fff' : '#333',
+                                      transition: 'background-color 0.3s ease, border-color 0.3s ease'
                                     }}
-                                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#e2e6ea'}
-                                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
+                                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = selectedTimeslot === `${timeslot.starttime}-${timeslot.endtime}-${timeslot.timeslot_id}` ? '#0056b3' : '#e2e6ea'}
+                                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = selectedTimeslot === `${timeslot.starttime}-${timeslot.endtime}-${timeslot.timeslot_id}` ? '#007bff' : '#f8f9fa'}
                                   >
                                     {timeslot.starttime} - {timeslot.endtime}
                                   </Form.Label>
                                 </div>
                               </Col>
                             ))}
-                          </div>
+                          </Row>
                         </div>
                         {
                           isOnline && (

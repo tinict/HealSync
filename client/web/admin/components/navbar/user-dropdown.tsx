@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from "@/features/auth/authSlice";
 import { useRouter } from 'next/navigation';
+import { DarkModeSwitch } from "./darkmodeswitch";
 
 export const UserDropdown = () => {
   const navigate = useNavigate();
@@ -48,6 +49,9 @@ export const UserDropdown = () => {
         aria-label="User menu actions"
         onAction={(actionKey) => console.log({ actionKey })}
       >
+        <DropdownItem key="switch">
+          <DarkModeSwitch />
+        </DropdownItem>
         <DropdownItem key="logout" color="danger" className="text-danger " onClick={APILogout}>
           Đăng xuất
         </DropdownItem>

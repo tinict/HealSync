@@ -122,4 +122,13 @@ export class AppointmentController {
             return res.status(500).json(error);
         }
     };
+
+    async countAppointments(req: Request, res: Response) {
+        try {
+            const countAppointment = await this.appointmentService.countAppointments(req.params.timeslot_id);
+            return res.status(200).json({ countAppointment })
+        } catch (error: any) {
+            return res.status(500).json(error);
+        }
+    };
 };

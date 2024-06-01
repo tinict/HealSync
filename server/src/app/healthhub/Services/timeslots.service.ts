@@ -10,15 +10,25 @@ import {
     TimeSlotEntity as TimeSlotRepository,
     DoctorEntity as DoctorRepository,
     DoctorEntity,
+    AppointmentEntity as AppointmentRepository
 } from '../Entities';
 import {
     ScheduleCreateModel,
     TimeSlotQueryModel
 } from "../Models";
+import { TYPES } from "../Database/types";
+import { AppointmentService } from './appointments.service';
 
 @injectable()
 export class TimeSlotService {
-    constructor() { };
+    private appointmentService: AppointmentService;
+
+    constructor(
+        @inject(TYPES.AppointmentService)
+        appointmentService: AppointmentService
+    ) {
+        this.appointmentService = appointmentService;
+    };
 
     async create(scheduleCreateModel: ScheduleCreateModel, newSchedule: ScheduleEntity, doctor: DoctorEntity) {
         try {
@@ -69,11 +79,16 @@ export class TimeSlotService {
         try {
             const doctorEntity = await DoctorRepository.findOne({ where: { doctor_id: timeSlotQueryModel.doctor_id } });
             if (!doctorEntity) return [];
-            var currentDate;
+
+            let currentDate;
+
             if (!isNaN(Date.parse(timeSlotQueryModel.datework))) {
                 currentDate = new Date(timeSlotQueryModel.datework);
                 currentDate = currentDate.toISOString().split('T')[0];
+            } else {
+                throw new Error("Invalid datework provided");
             }
+
             const timeSlots = await TimeSlotRepository
                 .createQueryBuilder("tbl_timeslot")
                 .leftJoin('tbl_timeslot.scheduleEntity', 'tbl_schedules')
@@ -83,7 +98,17 @@ export class TimeSlotService {
                     typeSchedule: timeSlotQueryModel.typeSchedule
                 })
                 .getMany();
-            return timeSlots;
+
+            const results: any[] = [];
+
+            for (const timeslot of timeSlots) {
+                const countAppointment: any = await this.appointmentService.countAppointments(timeslot.timeslot_id);
+                if (countAppointment < timeslot.count_person) {
+                    results.push(timeslot);
+                }
+            }
+
+            return results;
         } catch (error: any) {
             throw error;
         }
@@ -130,7 +155,17 @@ export class TimeSlotService {
                         endtime: timeSlotQueryModel.endtime,
                     })
                 .getMany();
-            return timeSlots;
+
+            const results: any[] = [];
+
+            for (const timeslot of timeSlots) {
+                const countAppointment: any = await this.appointmentService.countAppointments(timeslot.timeslot_id);
+                if (countAppointment < timeslot.count_person) {
+                    results.push(timeslot);
+                }
+            }
+
+            return results;
         } catch (error: any) {
             throw error;
         }
@@ -146,6 +181,7 @@ export class TimeSlotService {
                 currentDate = new Date(timeSlotQueryModel.datework);
                 currentDate = currentDate.toISOString().split('T')[0];
             }
+
             const timeSlots = await TimeSlotRepository
                 .createQueryBuilder("tbl_timeslot")
                 .leftJoin('tbl_timeslot.scheduleEntity', 'tbl_schedules')
@@ -157,7 +193,16 @@ export class TimeSlotService {
                     })
                 .getMany();
 
-            return timeSlots;
+            const results: any[] = [];
+
+            for (const timeslot of timeSlots) {
+                const countAppointment: any = await this.appointmentService.countAppointments(timeslot.timeslot_id);
+                if (countAppointment < timeslot.count_person) {
+                    results.push(timeslot);
+                }
+            }
+
+            return results;
         } catch (error: any) {
             throw error;
         }
@@ -215,7 +260,7 @@ export class TimeSlotService {
                 .from('tbl_timeslot')
                 .where("timeslot_id = :timeslot_id", { timeslot_id })
                 .execute();
-        } catch(error: any) {
+        } catch (error: any) {
             throw error;
         }
     };

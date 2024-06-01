@@ -11,7 +11,8 @@ import {
     CustomerEntity as CustomerRepository,
     ExaminationRecordEntity,
     ExaminationRecordEntity as ExaminationRepository,
-    ReExaminationScheduleEntity as ReExaminationScheduleRepository
+    ReExaminationScheduleEntity as ReExaminationScheduleRepository,
+    TimeSlotEntity
 } from '../Entities';
 import { ExaminationRecordService } from './examination-records.service';
 import { TYPES } from '../Database/types';
@@ -227,7 +228,7 @@ export class AppointmentService {
             console.log(appointment.timeSlotEntity);
 
             // const ordinalNumber_appointment = await AppointmentRepository.count({ where: { timeSlotEntity: appointment.timeSlotEntity, status_appointment: 1 } });
-            
+
             const result = await AppointmentRepository
                 .createQueryBuilder('tbl_appointments')
                 .select('MAX(tbl_appointments.ordinalNumber)', 'maxOrdinalNumber')
@@ -242,7 +243,7 @@ export class AppointmentService {
             console.log('Max ordinal number:', maxOrdinalNumber);
 
             // const ordinalNumber_reExamination = await ReExaminationScheduleRepository.count({ where: { timeSlotEntity: appointment.timeSlotEntity, status: 1 } });
-            
+
             const resultRe = await ReExaminationScheduleRepository
                 .createQueryBuilder('tbl_re_examination_schedules')
                 .select('MAX(tbl_re_examination_schedules.ordinalNumber)', 'maxOrdinalNumberRe')
@@ -401,6 +402,19 @@ export class AppointmentService {
 
                 await AppointmentRepository.save(appointment);
             }
+        } catch (error: any) {
+            throw error;
+        }
+    };
+
+    async countAppointments(timeslot_id: any) {
+        try {
+            const timeSlotEntity = await TimeSlotEntity.findOne({ where: { timeslot_id } })
+            if (!timeSlotEntity) return;
+
+            const countAppointment = await AppointmentEntity.count({ where: { timeSlotEntity } });
+            
+            return countAppointment;
         } catch (error: any) {
             throw error;
         }

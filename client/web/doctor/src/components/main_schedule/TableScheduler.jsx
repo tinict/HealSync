@@ -61,31 +61,61 @@ const TableScheduler = () => {
         return diffInDays > 1;
     };
 
+    const getDateVNLocalTime = () => {
+        const now = new Date();
+        const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+        const vnTime = new Date(utc + (7 * 60 * 60000));
+
+        const year = vnTime.getFullYear();
+        const month = String(vnTime.getMonth() + 1).padStart(2, '0');
+        const day = String(vnTime.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    }
+
+
     const handleSelectSlot = ({ start, end }) => {
         const checkThanOneDay = isMoreThanOneDay(start, end);
-        console.log(isMoreThanOneDay(start, end));
-        if (!checkThanOneDay) {
-            setNewEvent({
-                id: uuidv4(),
-                start,
-                end,
-                price: '',
-                location: '',
-                mode: 0,
-            });
-            setModalIsOpen(true);
+        const localDate = getDateVNLocalTime();
+
+        const startDate = new Date(start);
+        const localDateObj = new Date(localDate);
+
+        let twoDaysLater = new Date(localDateObj);
+        twoDaysLater.setDate(twoDaysLater.getDate() + 2);
+
+        if (startDate < twoDaysLater) {
+            handleAction("Ngày khám tạo lịch không hợp lệ!");
+            return;
         } else {
-            setNewEvent({
-                id: uuidv4(),
-                start,
-                end,
-                price: '',
-                location: '',
-                mode: 0,
-            });
-            setModalThanOneDay(true);
+            console.log(start);
+
+            if (start) {
+                if (!checkThanOneDay) {
+                    setNewEvent({
+                        id: uuidv4(),
+                        start,
+                        end,
+                        price: '',
+                        location: '',
+                        mode: 0,
+                    });
+                    setModalIsOpen(true);
+                } else {
+                    setNewEvent({
+                        id: uuidv4(),
+                        start,
+                        end,
+                        price: '',
+                        location: '',
+                        mode: 0,
+                    });
+                    setModalThanOneDay(true);
+                }
+            }
         }
     };
+
 
     const handleSelectEvent = (event) => {
         console.log(event);

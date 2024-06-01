@@ -38,6 +38,7 @@ const List = () => {
   const isLoggedIn = useSelector(state => state.auth.isAuthenticated);
   const [selectedDoctorIndex, setSelectedDoctorIndex] = useState(null);
   const [selectedTimeslot, setSelectedTimeslot] = useState(null);
+  const [isTimeValid, SetIsTimeValid] = useState(true);
 
   useEffect(() => {
     if (datework && generalAppointment?.cost) {
@@ -113,9 +114,12 @@ const List = () => {
   const handleSelectDoctor = (doctor, index) => {
     setSelectedDoctor(doctor);
     setSelectedDoctorIndex(index);
+    console.log(selectedTimeSlot);
+    setSelectedTimeSlot(null);
     const query = { doctor_id: doctor.doctorEntity.doctor_id, datework, typeSchedule };
     console.log(doctor.doctorEntity.doctor_id);
     setDoctorid(doctor.doctorEntity.doctor_id);
+    setTimeSlots([]);
     dispatch(setAppointment({
       date: datework,
       time: selectedTimeSlot,
@@ -131,6 +135,7 @@ const List = () => {
       .then((res) => {
         setTimeSlots(res.data);
         setGeneralAppointment(res.data[0]);
+        setSelectedTimeSlot(null);
       })
       .catch(error => {
         console.error('Error fetching time slots:', error);
@@ -200,6 +205,14 @@ const List = () => {
   const handleTimeslotClick = (timeslotValue) => {
     setSelectedTimeslot(timeslotValue);
     handleTimeSlotChange(timeslotValue);
+  };
+
+  const checkCountPerson = (timeslot_id, count_person) => {
+    axios.get(`http://localhost:5002/api/v1/appointment/counts/${timeslot_id}`)
+      .then((res) => {
+        if (Number(res.data.countAppointment) >= Number(count_person)) SetIsTimeValid(false);
+        else return false;
+      })
   };
 
   return (
@@ -349,7 +362,7 @@ const List = () => {
                           <label className="form-label">Giờ khám:</label>
                           <Row>
                             {timeslots.map((timeslot, index) => (
-                              <Col key={index} xs={12} sm={6} md={4} lg={3}>
+                              < Col key={index} xs={12} sm={6} md={4} lg={3} >
                                 <div className="custom-radio" style={{ marginTop: '10px' }}>
                                   <Form.Check
                                     type="radio"
@@ -376,6 +389,7 @@ const List = () => {
                                       color: selectedTimeslot === `${timeslot.starttime}-${timeslot.endtime}-${timeslot.timeslot_id}` ? '#fff' : '#333',
                                       transition: 'background-color 0.3s ease, border-color 0.3s ease'
                                     }}
+                                    onClick={() => { checkCountPerson(timeslot.timeslot_id, timeslot.count_person) }}
                                     onMouseOver={(e) => e.currentTarget.style.backgroundColor = selectedTimeslot === `${timeslot.starttime}-${timeslot.endtime}-${timeslot.timeslot_id}` ? '#0056b3' : '#e2e6ea'}
                                     onMouseOut={(e) => e.currentTarget.style.backgroundColor = selectedTimeslot === `${timeslot.starttime}-${timeslot.endtime}-${timeslot.timeslot_id}` ? '#007bff' : '#f8f9fa'}
                                   >
@@ -387,14 +401,12 @@ const List = () => {
                           </Row>
                         </div>
                         {
-                          isOnline && (
-                            generalAppointment.localtion !== undefined && (
-                              <p className="card-text"><strong>Địa chỉ khám:</strong> {generalAppointment.localtion}</p>
-                            )
+                          generalAppointment.localtion !== undefined &&   (
+                            <p className="card-text"><strong>Địa chỉ khám:</strong> {generalAppointment.localtion}</p>
                           )
                         }
                         {
-                          generalAppointment.cost !== undefined && typeSchedule !== '2' && (
+                          generalAppointment.cost !== undefined && (
                             <p className="card-text"><strong>Giá tiền khám:</strong> {Number(generalAppointment.cost).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
                           )
                         }

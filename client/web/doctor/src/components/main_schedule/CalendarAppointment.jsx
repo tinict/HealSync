@@ -21,7 +21,7 @@ export default function CalendarAppointment() {
         const fetchAppointments = async () => {
             try {
                 const response = await axios.get(`http://localhost:5002/api/v1/appointments/doctor/${userInfo.user.identity_id}`);
-                const appointmentsData = response.data.filter(appointment => appointment.status_appointment === 1);
+                const appointmentsData = response.data.filter(appointment => appointment.status_appointment === 1 || appointment.status_appointment === 5);
                 console.log(appointmentsData);
                 setAppointments(appointmentsData);
             } catch (error) {

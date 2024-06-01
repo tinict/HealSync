@@ -67,6 +67,11 @@ class Appointment {
             "/v1/appointment/list-customer", 
             this.appointmentController.updateStatusListCustomerAppointment.bind(this.appointmentController)
         );
+
+        this.router.get(
+            "/v1/appointment/counts/:timeslot_id", 
+            this.appointmentController.countAppointments.bind(this.appointmentController)
+        );
     };
 };
 

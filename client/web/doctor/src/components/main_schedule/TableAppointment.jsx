@@ -11,7 +11,6 @@ export default function TableApointment() {
     const [selectedTimeSlot, setSelectedTimeSlot] = React.useState('');
     const [timeSlots, setTimeSlots] = React.useState([]);
     const [selectedAppointment, setSelectedAppointment] = React.useState([]);
-    const [searchTerm, setSearchTerm] = React.useState('');
 
     const fetchApiPatients = () => {
         axios.get(`http://localhost:5002/api/v1/patients/${userInfo.user.identity_id}`)
@@ -95,16 +94,6 @@ export default function TableApointment() {
     const handleChangeAppointment = (appointment) => {
         setSelectedAppointment(appointment);
         setEditModalOpen(true);
-    };
-
-    const handleChangeSearch = (event) => {
-        fetchApiPatients();
-        setSearchTerm(event.target.value);
-        const filteredAppointments = appointments.filter(appointment =>
-            appointment.firstname && appointment.firstname.toLowerCase() === searchTerm.toLowerCase() ||
-            appointment.lastname && appointment.lastname.toLowerCase() === searchTerm.toLowerCase()
-        );
-        setAppointments(filteredAppointments);
     };
 
     return (

@@ -139,6 +139,8 @@ function Header() {
                     >
                         <MenuItem onClick={handleCloseUserMenu}>
                             <Typography textAlign="center" onClick={accountSetting}>Thông tin cá nhân</Typography>
+                        </MenuItem>
+                        <MenuItem onClick={handleCloseUserMenu}>
                             <Typography textAlign="center" onClick={APILogout}>Đăng xuất</Typography>
                         </MenuItem>
                     </Menu>

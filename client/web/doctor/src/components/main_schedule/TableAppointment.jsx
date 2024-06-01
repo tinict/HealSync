@@ -29,6 +29,7 @@ export default function TableApointment() {
         2: { text: "Đã đến khám", color: "green" },
         3: { text: "Hủy khám", color: "red" },
         4: { text: "Đang chờ xử lý lịch", color: "red" },
+        5: { text: "Đang khám", color: "red" },
     };
 
     const confirmAPIReExaminationSchedule = () => {
@@ -102,6 +103,7 @@ export default function TableApointment() {
                 <Table>
                     <TableHead>
                         <TableRow>
+                            <TableCell style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>Trạng thái</TableCell>
                             <TableCell style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>Họ đệm</TableCell>
                             <TableCell style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>Tên</TableCell>
                             <TableCell style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>Email</TableCell>
@@ -112,13 +114,17 @@ export default function TableApointment() {
                             <TableCell style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>Lý do khám bệnh</TableCell>
                             <TableCell style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>Ngày khám</TableCell>
                             <TableCell style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>Thời gian bắt khám</TableCell>
-                            <TableCell style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>Trạng thái</TableCell>
                             <TableCell style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {appointments.map((appointment) => (
                             <TableRow key={appointment.appointment_id}>
+                                <TableCell style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>
+                                    <span className={`inline-block px-2 py-1 text-xs font-semibold text-${statusMap[appointment.status_appointment]?.color}-600 bg-${statusMap[appointment.status]?.color}-200 rounded-full`}>
+                                        {statusMap[appointment.status_appointment]?.text}
+                                    </span>
+                                </TableCell>
                                 <TableCell>{appointment.firstname}</TableCell>
                                 <TableCell>{appointment.lastname}</TableCell>
                                 <TableCell>{appointment.email}</TableCell>
@@ -129,11 +135,6 @@ export default function TableApointment() {
                                 <TableCell>{appointment.reasonForConsultation}</TableCell>
                                 <TableCell>{appointment.datework}</TableCell>
                                 <TableCell>{appointment.starttime}</TableCell>
-                                <TableCell style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                    <span className={`inline-block px-2 py-1 text-xs font-semibold text-${statusMap[appointment.status_appointment]?.color}-600 bg-${statusMap[appointment.status]?.color}-200 rounded-full`}>
-                                        {statusMap[appointment.status_appointment]?.text}
-                                    </span>
-                                </TableCell>
                                 <TableCell>
                                     <button
                                         disabled={appointment.status_appointment !== 4}

@@ -31,6 +31,7 @@ export default function TableReExaminationSchedule() {
             <Table>
                 <TableHead>
                     <TableRow>
+                        <TableCell>Trạng thái</TableCell>
                         <TableCell>Họ đệm</TableCell>
                         <TableCell>Tên</TableCell>
                         <TableCell>Email</TableCell>
@@ -42,28 +43,27 @@ export default function TableReExaminationSchedule() {
                         <TableCell>Ngày khám</TableCell>
                         <TableCell>Thời gian bắt khám</TableCell>
                         <TableCell>Thời gian kết thúc</TableCell>
-                        <TableCell>Trạng thái</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {appointments.map((appointment) => (
                         <TableRow key={appointment.increment_id}>
+                            <TableCell>
+                                <span className={`inline-block px-2 py-1 text-xs font-semibold text-${statusMap[appointment.status]?.color}-600 bg-${statusMap[appointment.status]?.color}-200 rounded-full`}>
+                                    {statusMap[appointment.status]?.text}
+                                </span>
+                            </TableCell>
                             <TableCell>{appointment.appointmentEntity.examinationRecordEntity.firstname}</TableCell>
                             <TableCell>{appointment.appointmentEntity.examinationRecordEntity.lastname}</TableCell>
                             <TableCell>{appointment.appointmentEntity.examinationRecordEntity.email}</TableCell>
                             <TableCell>{appointment.appointmentEntity.examinationRecordEntity.phone}</TableCell>
-                            <TableCell>{appointment.appointmentEntity.examinationRecordEntity.gender === 2 ? 'Name' : 'Nữ'}</TableCell>
+                            <TableCell>{appointment.appointmentEntity.examinationRecordEntity.gender === 2 ? 'Nam' : 'Nữ'}</TableCell>
                             <TableCell>{appointment.appointmentEntity.examinationRecordEntity.address}</TableCell>
                             <TableCell>{appointment.appointmentEntity.examinationRecordEntity.medicalHistory}</TableCell>
                             <TableCell>{appointment.appointmentEntity.examinationRecordEntity.reasonForConsultation}</TableCell>
                             <TableCell>{appointment.timeSlotEntity.scheduleEntity?.datework}</TableCell>
                             <TableCell>{appointment.timeSlotEntity.starttime}</TableCell>
                             <TableCell>{appointment.timeSlotEntity.endtime}</TableCell>
-                            <TableCell>
-                                <span className={`inline-block px-2 py-1 text-xs font-semibold text-${statusMap[appointment.status]?.color}-600 bg-${statusMap[appointment.status]?.color}-200 rounded-full`}>
-                                    {statusMap[appointment.status]?.text}
-                                </span>
-                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

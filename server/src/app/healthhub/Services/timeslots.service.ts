@@ -85,10 +85,8 @@ export class TimeSlotService {
             if (!isNaN(Date.parse(timeSlotQueryModel.datework))) {
                 currentDate = new Date(timeSlotQueryModel.datework);
                 currentDate = currentDate.toISOString().split('T')[0];
-            } else {
-                throw new Error("Invalid datework provided");
-            }
-
+            } 
+            
             const timeSlots = await TimeSlotRepository
                 .createQueryBuilder("tbl_timeslot")
                 .leftJoin('tbl_timeslot.scheduleEntity', 'tbl_schedules')

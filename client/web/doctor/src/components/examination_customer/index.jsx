@@ -4,12 +4,12 @@ import { Button, List, ListItem, ListItemText, Typography, Box, Container, Modal
 import { useDispatch, useSelector } from 'react-redux';
 import { medicalRecord } from '../../features/medicalRecordSlice';
 import { useNavigate } from 'react-router-dom';
-import { Document, Page } from 'react-pdf';
 import ModalReExamination from './ModalReExamination';
 import { format } from 'date-fns';
 import Collapse from '@mui/material/Collapse';
 import { useLocation } from "react-router-dom";
 import PatientReExaminationInfoModal from '../re_examination_schedule/PatientReExaminationInfoModal';
+import { UilAngleDown, UilAngleUp } from '@iconscout/react-unicons';
 
 function ExaminationCustomer({ patient_id }) {
     const userInfo = useSelector((state) => state.auth.user);
@@ -27,6 +27,8 @@ function ExaminationCustomer({ patient_id }) {
     const typeExamination = queryParams.get('type');
     const appointment_id = queryParams.get('appointment_id');
     const [patientInfo, setPatientInfo] = useState([]);
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [isDropdown, setIsDropdown] = useState(true);
 
     dispatch(medicalRecord({ ...medicalRecs, patient_id }));
 
@@ -121,25 +123,15 @@ function ExaminationCustomer({ patient_id }) {
 
     const handleToggleForm = () => {
         setOpenForm(!openForm);
+        setIsDropdown(!isDropdown);
     };
 
     const [openExaminationRecord, setOpenExaminationRecord] = useState(false);
 
     const handleToggleExaminationRecord = () => {
         setOpenExaminationRecord(!openExaminationRecord);
+        setIsExpanded(!isExpanded);
     };
-
-    // const patientInfo = {
-    //     name: 'Nguyễn Văn A',
-    //     gender: 'Nam',
-    //     dob: '01/01/1990',
-    //     address: '123 Đường ABC, Phường XYZ, Quận 1, TP.HCM',
-    //     medicalHistory: 'Tiểu đường, Cao huyết áp',
-    //     patientId: '123456',
-    //     visitDate: '15/05/2024',
-    //     followUpDate: '25/05/2024',
-    //     diagnosis: 'Viêm phổi',
-    // };
 
     return (
         <div>
@@ -201,9 +193,10 @@ function ExaminationCustomer({ patient_id }) {
                 gutterBottom
                 component="div"
                 onClick={handleToggleForm}
-                sx={{ cursor: 'pointer' }}
+                sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
             >
                 Danh sách biểu mẫu
+                {isDropdown ? <UilAngleUp size="24" /> : <UilAngleDown size="24" />}
             </Typography>
             <Collapse in={openForm}>
                 <List
@@ -256,9 +249,10 @@ function ExaminationCustomer({ patient_id }) {
                 component="div"
                 style={{ marginTop: '20px' }}
                 onClick={handleToggleExaminationRecord}
-                sx={{ cursor: 'pointer' }}
+                sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
             >
                 Bệnh án của bệnh nhân
+                {isExpanded ? <UilAngleUp size="24" /> : <UilAngleDown size="24" />}
             </Typography>
             <Collapse in={openExaminationRecord}>
                 <List style={{ display: 'flex', gap: '5px', padding: '10px', width: "100%" }}>

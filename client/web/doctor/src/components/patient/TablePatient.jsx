@@ -18,11 +18,20 @@ export default function TablePatient() {
         fetchApiPatients();
     }, []);
 
+    const statusMap = {
+        1: { text: "Chưa khám", color: "blue" },
+        2: { text: "Đã đến khám", color: "green" },
+        3: { text: "Hủy khám", color: "red" },
+        4: { text: "Đang chờ xử lý lịch", color: "red" },
+        5: { text: "Đang khám", color: "red" },
+    };
+
     return (
         <TableContainer component={Paper}>
             <Table>
                 <TableHead>
                     <TableRow>
+                        <TableCell>Trạng thái</TableCell>
                         <TableCell>Ngày Tạo </TableCell>
                         <TableCell>Họ đệm</TableCell>
                         <TableCell>Tên</TableCell>
@@ -38,12 +47,16 @@ export default function TablePatient() {
                         <TableCell>Loại lịch</TableCell>
                         <TableCell>Bắt đầu khám</TableCell>
                         <TableCell>Kết thúc khám</TableCell>
-                        <TableCell>Trạng thái khám</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {appointments.map((appointment) => (
                         <TableRow key={appointment.id}>
+                            <TableCell style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>
+                                <span className={`inline-block px-2 py-1 text-xs font-semibold text-${statusMap[appointment.status_appointment]?.color}-600 bg-${statusMap[appointment.status]?.color}-200 rounded-full`}>
+                                    {statusMap[appointment.status_appointment]?.text}
+                                </span>
+                            </TableCell>
                             <TableCell>{appointment.createdAt}</TableCell>
                             <TableCell>{appointment.firstname}</TableCell>
                             <TableCell>{appointment.lastname}</TableCell>
@@ -56,10 +69,9 @@ export default function TablePatient() {
                             <TableCell>{appointment.reasonForConsultation}</TableCell>
                             <TableCell>{appointment.idCardNumber}</TableCell>
                             <TableCell>{appointment.datework}</TableCell>
-                            <TableCell>{appointment.typeSchedule}</TableCell>
+                            <TableCell>{appointment.typeSchedule === 1 ? 'Tại phòng khám' : 'Tư vấn trực tuyến'}</TableCell>
                             <TableCell>{appointment.starttime}</TableCell>
                             <TableCell>{appointment.endtime}</TableCell>
-                            <TableCell>{appointment.status_appointment}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

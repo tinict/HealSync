@@ -53,11 +53,11 @@ export class AuthenticationGoogleController {
             if (!token_db) return res.status(500);
 
             const isMatch = await this.authService.dencrypt(access_token, token_db);
-            if (isMatch) {
-                await axios.post('https://oauth2.googleapis.com/revoke', {
-                    token: access_token
-                });
-            }
+            // if (isMatch) {
+            //     await axios.post('https://oauth2.googleapis.com/revoke', {
+            //         token: access_token
+            //     });
+            // }
             res.status(200).send('Logout successfull');
         } catch (error) {
             console.log(error);

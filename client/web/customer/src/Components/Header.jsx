@@ -13,8 +13,9 @@ function Header() {
     const dispatch = useDispatch();
     const isLoggedIn = useSelector(state => state.auth.isAuthenticated);
     const customerProfile = useSelector(state => state.customer);
-    const [userProfile, setUserProfile] =  useState([]);
-    
+    const [userProfile, setUserProfile] = useState([]);
+    const [isLock, setIsLock] = useState(true);
+
     function logIn() {
         window.open('http://localhost:5000/api/v1/auth/google', '_self');
     }
@@ -31,6 +32,11 @@ function Header() {
                         setUserProfile(res.data);
                         console.log(res.data);
                         dispatch(customer(res.data));
+                        setIsLock(res.data.isActive);
+                        if (!res.data.isActive) {
+                            alert("Tài khoản bạn đã bị khóa!");
+                            logOut();
+                        }
                     })
             })
             .catch(error => console.error(error));
@@ -38,10 +44,12 @@ function Header() {
 
     function logOut() {
         const client_token = Cookies.get('client_token');
-        axios.post('http://localhost:5000/api/v1/google/logout', { client_token });
-        Cookies.remove('client_token');
-        dispatch(logout());
-        localStorage.removeItem("state");
+        axios.post('http://localhost:5000/api/v1/google/logout', { client_token })
+            .then(() => {
+                Cookies.remove('client_token');
+                dispatch(logout());
+                localStorage.removeItem("state");
+            })
     };
 
     useEffect(() => {

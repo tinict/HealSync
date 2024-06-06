@@ -428,7 +428,8 @@ const List = () => {
                 <Alert style={{ backgroundColor: 'lightblue' }}>
                   <b>*Lưu ý:</b><br></br>
                   1. Lịch sẽ được đóng khi đã đến ngày khám, yêu cầu khách hàng phải đặt trước lịch trước ngày khám<br></br>
-                  2. Vui lòng chọn bác sĩ mà mình muốn để tiến hàng đặt lịch hẹn
+                  2. Vui lòng chọn bác sĩ mà mình muốn để tiến hàng đặt lịch hẹn<br></br>
+                  3. Bạn vui lòng đăng nhập / đăng ký trước khi sử dụng những chức năng của hệ thống.
                 </Alert>
               )
             }

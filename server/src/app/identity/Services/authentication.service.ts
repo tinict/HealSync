@@ -46,7 +46,7 @@ export class AuthenticationService {
     async isTokenBlacklisted(token: any) {
         const result = await this.redis.get(token);
         return result !== null;
-    }
+    };
 
     generateAccessToken(account: any) {
         return jwt.sign({
@@ -155,7 +155,7 @@ export class AuthenticationService {
             }
 
             const token = this.generateAccessToken(account);
-            
+
             return token;
         } catch (error) {
             console.error(error);
@@ -189,18 +189,23 @@ export class AuthenticationService {
         }, config.auth.JWT.Secret as string);
     };
 
-    async createOTP(emailUser: string) {
+    async createOTP(emailUser: any) {
         try {
             const otp_key = uuidv4().substring(0, 6);
-            await axios.post(
-                'http://localhost:5009/api/v1/mailer/sendmail',
-                {
+
+            await fetch('http://localhost:5009/api/v1/mailer/sendmail', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
                     to: emailUser,
                     subject: 'HealthHub | Thông báo mã xác thực tài khoản của bạn',
                     data: { otp_key },
                     template: 'identifyCode'
-                }
-            )
+                })
+            });
 
             return jwt.sign({
                 iss: 'identify_otp',

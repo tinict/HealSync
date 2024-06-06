@@ -25,7 +25,7 @@ export default function CalendarAppointment() {
         const fetchAppointments = async () => {
             try {
                 const response = await axios.get(`http://localhost:5002/api/v1/re-examination-schedules?doctor_id=${userInfo.user.identity_id}`);
-                const appointmentsData = response.data.filter(appointment => appointment.status === 1);
+                const appointmentsData = response.data.filter(appointment => appointment.status === 1 || appointment.status === 6);
                 console.log(appointmentsData);
                 setAppointments(appointmentsData);
             } catch (error) {
@@ -67,6 +67,7 @@ export default function CalendarAppointment() {
     const handleCreateMedicalRecord = () => {
         navigate(`/examination/${eventDetail.extendedProps.details.customer_id}?type=re-examination&&appointment_id=${eventDetail.extendedProps.details.appointment_id}`);
         dispatch(medicalRecord({ appointment_id: eventDetail.extendedProps.details.id }));
+        handleUpdateStatusAppointment(eventDetail.extendedProps.details.id, 6);
         handleCloseModal();
     };
 

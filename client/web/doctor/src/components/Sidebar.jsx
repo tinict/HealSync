@@ -5,6 +5,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Tooltip from '@mui/material/Tooltip';
+import zIndex from "@mui/material/styles/zIndex";
 
 const Sidebar = () => {
   const [selected, setSelected] = useState(0);

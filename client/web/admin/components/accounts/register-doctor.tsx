@@ -47,9 +47,12 @@ const CreateAccountDoctor = () => {
             const response = await axios.post('http://localhost:5001/api/v1/auth/register', {
                 ...formData,
                 model_id: formData.model?.model_id
-            });
-            APISendmail();
-            console.log('Registration successful:', formData);
+            })
+                .then(() => {
+                    alert("Bạn đã cấp tài khoản thành công!");
+                    APISendmail();
+                    console.log('Registration successful:', formData);
+                })
         } catch (error) {
             console.error('Registration failed:', error);
         }

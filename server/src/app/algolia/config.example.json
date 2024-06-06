@@ -1,0 +1,29 @@
+{
+    "server": {
+        "id": "ServiceAlgolia",
+        "port": 5010
+    },
+    "api": {
+        "route": "api",
+        "modules": [
+            {
+                "name": "",
+                "route": ""
+            }
+        ]
+    },
+    "serviceRegistry": {
+        "database": {
+            "name": "",
+            "user": "",
+            "password": "",
+            "host": "",
+            "port": ""
+        }
+    },
+    "algolia": {
+        "app_id": "***",
+        "api_key": "***",
+        "index_name": "***"
+    }
+}

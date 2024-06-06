@@ -93,7 +93,8 @@ const ReExaminationSchedule = () => {
         2: { text: "Đã đến tái khám", color: "success" },
         3: { text: "Hủy tái khám", color: "danger" },
         4: { text: "Không đến tái khám", color: "danger" },
-        5: { text: "Đăng ký lịch tái khám", color: "danger" }
+        5: { text: "Đăng ký lịch tái khám", color: "danger" },
+        6: { text: "Đang tái khám", color: "blue"}
     };
 
     const handleClose = (appointmentId) => {

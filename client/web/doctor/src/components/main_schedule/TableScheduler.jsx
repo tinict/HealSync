@@ -174,9 +174,10 @@ const TableScheduler = () => {
         return await axios.put(`http://localhost:5002/api/v1/timeslots/${event.extendedProps.timeslot_id}`, {
             count_person: event?.extendedProps?.countPerson,
             cost: event?.extendedProps?.price,
-            localtion: event.extendedProps.location,
+            localtion: event?.extendedProps?.location,
             starttime: starttime,
             endtime: endtime,
+            typeSchedule: event?.extendedProps?.mode
         });
     };
 
@@ -198,7 +199,7 @@ const TableScheduler = () => {
             if (newEvent.price && newEvent.location && newEvent.mode && newEvent.countPerson) {
                 try {
                     const res = await APITimeTable(newEvent.start, newEvent.end, userInfo.user.identity_id, newEvent.location, newEvent.countPerson, newEvent.price);
-                    handleAction("Tạo lịch khám thành công !");
+                    
                     setModalIsOpen(false);
                     displayEventsOnCalendar();
                     const eventData = res.data.scheduleCreate;
@@ -223,10 +224,12 @@ const TableScheduler = () => {
                                 },
                             };
                             setEvents([...events, event]);
+                            handleAction("Tạo lịch khám thành công !");
                         }
                     }
                     setIsEditing(false);
                 } catch (error) {
+                    handleAction("Tạo lịch khám thất bại !");
                     console.error('Error saving event:', error);
                 }
             }
@@ -234,9 +237,6 @@ const TableScheduler = () => {
     };
 
     const handleCreateMutipleAppointment = async () => {
-        console.log(newEvent.start, newEvent.end);
-
-        console.log(newEvent.start, newEvent.end);
 
         const startTime = new Date(newEvent.start);
         const endTime = new Date(newEvent.end);
@@ -248,8 +248,6 @@ const TableScheduler = () => {
             let currentStart = new Date(current);
             let currentEnd = new Date(current);
             currentEnd.setHours(endTime.getHours(), endTime.getMinutes());
-
-            console.log(currentStart.toISOString(), currentEnd.toISOString());
 
             try {
                 await APITimeTable(
@@ -272,7 +270,6 @@ const TableScheduler = () => {
     };
 
     const handleEventResize = ({ event, start, end }) => {
-        console.log({ event, start, end });
         const updatedEvents = events.map(item => (item.id === event.id ? { ...item, start, end } : item));
         setEvents(updatedEvents);
     };
@@ -299,7 +296,7 @@ const TableScheduler = () => {
     const fetchScheduleData = async () => {
         const response = await axios.get(`http://localhost:5002/api/v1/schedules/${userInfo.user.identity_id}`);
         console.log(response);
-        return response.data;
+        return response.data.filter(item => item.isActive == true);
     };
 
     const convertDataToEvents = (data) => {
@@ -324,7 +321,6 @@ const TableScheduler = () => {
         const data = await fetchScheduleData(2);
         const events = convertDataToEvents(data);
         setEvents(events);
-        console.log(events);
         return events;
     };
 
@@ -466,18 +462,6 @@ const TableScheduler = () => {
                                             label="Giá khám"
                                             value={isEditing ? (selectedEvent?.extendedProps?.price || '') : newEvent.price}
                                             onChange={(e) => handleModalInputChange('price', e.target.value)}
-                                        />
-                                    </Grid>
-                                )
-                            }
-                            {
-                                newEvent?.mode === 1 || selectedEvent?.extendedProps?.mode === 1 && (
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            fullWidth
-                                            label="Vị trí khám"
-                                            value={isEditing ? (selectedEvent?.extendedProps?.location || '') : newEvent.location}
-                                            onChange={(e) => handleModalInputChange('location', e.target.value)}
                                         />
                                     </Grid>
                                 )

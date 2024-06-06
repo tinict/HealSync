@@ -395,6 +395,8 @@ export class AppointmentService {
             }
 
             for (const customer of listCustomer) {
+                if (customer.appointmentEntity.status_appointment !== 1) continue;
+
                 const appointment = await AppointmentRepository.findOne({ where: { appointment_id: customer.appointmentEntity.appointment_id } });
                 if (!appointment) continue;
 
@@ -412,7 +414,7 @@ export class AppointmentService {
             const timeSlotEntity = await TimeSlotEntity.findOne({ where: { timeslot_id } })
             if (!timeSlotEntity) return;
 
-            const countAppointment = await AppointmentEntity.count({ where: { timeSlotEntity } });
+            const countAppointment = await AppointmentEntity.count({ where: { timeSlotEntity, status_appointment: 1 } });
             
             return countAppointment;
         } catch (error: any) {

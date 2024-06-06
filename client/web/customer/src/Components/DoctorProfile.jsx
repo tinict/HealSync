@@ -45,19 +45,17 @@ function DoctorProfile({ doctor_id }) {
                         <Card.Body>
                             <Card.Title>Dr. {profileDoctor.firstname} {profileDoctor.lastname}</Card.Title>
                             <Card.Text>
-                                Chuyên ngành {profileDoctor.specialty}
+                                <strong>Chuyên ngành:</strong> {profileDoctor.specialty}
                                 <br />
-                                Chuyên môn: {profileDoctor.qualification}
+                                <strong>Chuyên môn:</strong> {profileDoctor.qualification}
                                 <br />
-                                Giới tính: {profileDoctor.gender ? 'Nam' : 'Nữ'}
+                                <strong>Giới tính:</strong> {profileDoctor.gender ? 'Nam' : 'Nữ'}
                                 <br />
-                                Email: {profileDoctor.email}
+                                <strong>Email:</strong> {profileDoctor.email}
                                 <br />
-                                Chức vụ: {profileDoctor.position}
+                                <strong>Chức vụ:</strong> {profileDoctor.position}
                                 <br />
-                                Tên nơi khám: {profileDoctor.workspace}
-                                <br />
-                                Địa chỉ khám: {profileDoctor.location}
+                                <strong>Địa chỉ khám:</strong> {profileDoctor.workspace}
                             </Card.Text>
                         </Card.Body>
                         <Card.Footer>

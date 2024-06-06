@@ -23,7 +23,8 @@ export default function TableReExaminationSchedule() {
         2: { text: "Đã đến tái khám", color: "green" },
         3: { text: "Hủy tái khám", color: "red" },
         4: { text: "Không đến tái khám", color: "red" },
-        5: { text: "Yêu cầu đổi lịch", color: "red" },
+        5: { text: "Đang đổi lịch", color: "red" },
+        6: { text: "Đang tái khám", color: "green" },
     };
 
     return (

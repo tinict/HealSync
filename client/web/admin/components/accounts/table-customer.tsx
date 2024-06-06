@@ -143,7 +143,7 @@ export const TableCustomer = () => {
                             <TableCell>{row.name}</TableCell>
                             <TableCell>{row.dob}</TableCell>
                             <TableCell>{row.email}</TableCell>
-                            <TableCell>{row.gender}</TableCell>
+                            <TableCell>{row.gender === 1 ? "Nam" : "Nữ"}</TableCell>
                             <TableCell>{row.phone}</TableCell>
                             <TableCell>{row.create_at}</TableCell>
                             <TableCell>{row.update_at}</TableCell>

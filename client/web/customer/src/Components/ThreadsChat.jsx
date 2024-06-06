@@ -11,7 +11,7 @@ export function ThreadsChat() {
     const [content, setContent] = useState('');
     const navigate = useNavigate();
     const customerProfile = useSelector(state => state.customer);
-
+    const isLoggedIn = useSelector(state => state.auth.isAuthenticated);
 
     const APIThreads = () => {
         axios.get('http://localhost:5006/api/v1/threads')
@@ -29,7 +29,13 @@ export function ThreadsChat() {
     }, []);
 
     const handleCreateQuestion = () => {
-        setShowModal(true);
+        if(!isLoggedIn) {
+            alert("Bạn vui lòng đăng nhập/đăng ký để được cấp quyền sử dụng chức năng này!");
+            return;
+        }
+        else {
+            setShowModal(true);
+        }
     };
 
     const handleCloseModal = () => {

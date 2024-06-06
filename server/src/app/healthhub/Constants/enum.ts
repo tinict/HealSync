@@ -9,7 +9,10 @@ export enum StatusAppointment {
     done = 2,
     cancel = 3,
     processing_calendar = 4,
-    examining = 5
+    examining = 5,
+    notcome = 6,
+    failure = 7,
+    scheduling = 8
 };
 
 export enum ReExaminationSchedule {
@@ -17,7 +20,8 @@ export enum ReExaminationSchedule {
     examined = 2,
     cancel = 3,
     notcome = 4,
-    processing_calendar = 5
+    processing_calendar = 5,
+    examining = 6
 };
 
 export enum RefundStatus {

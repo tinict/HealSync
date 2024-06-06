@@ -87,6 +87,7 @@ export class AuthenticationController {
     async createOTP(req: Request, res: Response) {
         try {
             const emailUser = req.query.eu as string;
+            console.log(emailUser);
             const token = await this.authenticationService.createOTP(emailUser);
             return res.status(200).json({ token });
         } catch (error: any) {

@@ -9,24 +9,26 @@ const CancelAppointmentModal = ({ isOpen, onClose, listData }) => {
         console.log(listData);
         const result = [];
         listData.forEach(item => {
-            result.push({
-                to: item.email,
-                subject: `HealthHub | Thông báo hủy lịch khám benh nhan ${item.firstname}`,
-                template: 'appointment_cancel',
-                data: {
-                    firstname: item.firstname,
-                    lastname: item.lastname,
-                    phone: item.phone,
-                    date: item.appointmentEntity.timeSlotEntity.scheduleEntity.datework,
-                    starttime: item.appointmentEntity.timeSlotEntity.starttime,
-                    endtime: item.appointmentEntity.timeSlotEntity.endtime,
-                    doctor_firstname: item.appointmentEntity.timeSlotEntity.scheduleEntity.doctorEntity.firstname,
-                    doctor_lastname: item.appointmentEntity.timeSlotEntity.scheduleEntity.doctorEntity.lastname,
-                    location: item.appointmentEntity.timeSlotEntity.localtion,
-                    schedule_type: item.appointmentEntity.timeSlotEntity.scheduleEntity.scheduleTypeEntity.schedule_type_name,
-                    reason: reason
-                }
-            });
+            if (item.appointmentEntity.status_appointment === 1) {
+                result.push({
+                    to: item.email,
+                    subject: `HealthHub | Thông báo hủy lịch khám benh nhan ${item.firstname}`,
+                    template: 'appointment_cancel',
+                    data: {
+                        firstname: item.firstname,
+                        lastname: item.lastname,
+                        phone: item.phone,
+                        date: item.appointmentEntity.timeSlotEntity.scheduleEntity.datework,
+                        starttime: item.appointmentEntity.timeSlotEntity.starttime,
+                        endtime: item.appointmentEntity.timeSlotEntity.endtime,
+                        doctor_firstname: item.appointmentEntity.timeSlotEntity.scheduleEntity.doctorEntity.firstname,
+                        doctor_lastname: item.appointmentEntity.timeSlotEntity.scheduleEntity.doctorEntity.lastname,
+                        location: item.appointmentEntity.timeSlotEntity.localtion,
+                        schedule_type: item.appointmentEntity.timeSlotEntity.scheduleEntity.scheduleTypeEntity.schedule_type_name,
+                        reason: reason
+                    }
+                });
+            }
         });
 
         return result;

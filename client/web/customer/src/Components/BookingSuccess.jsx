@@ -37,13 +37,13 @@ function BookingSuccess() {
     const convertToISOString = (date, time) => {
         const dateTimeString = `${date}T${time}`;
         const dateTime = new Date(dateTimeString);
-    
-        const timezoneOffset = 7 * 60; 
+
+        const timezoneOffset = 7 * 60;
         const adjustedDateTime = new Date(dateTime.getTime() + timezoneOffset * 60 * 1000);
-    
+
         const isoString = adjustedDateTime.toISOString();
         const isoStringWithTimeZone = isoString.slice(0, -1) + "+07:00";
-    
+
         return isoStringWithTimeZone;
     };
 
@@ -56,19 +56,25 @@ function BookingSuccess() {
                     console.log(res.data);
                     try {
                         const meetLink = await APICalendar();
-                        console.log(meetLink.data.meetLink);
                         await fetchUpdateStatus(examination.appointment_id, 1, res.data.ordinalNumber, meetLink.data.meetLink);
                         fetchAPInvoice();
                         APISendmail();
                     } catch (error) {
                         console.error("Error fetching meet link: ", error);
+                        console.log(examination.appointment_id);
+                        fetchUpdateStatus(examination.appointment_id, 7);
+                        fetchAPInvoice();
                     }
                 })
                 .catch(error => {
                     console.error("Error fetching ordinal number: ", error);
+                    console.log(examination.appointment_id);
+                    fetchUpdateStatus(examination.appointment_id, 7);
+                    fetchAPInvoice();
                 });
         } else {
-            fetchUpdateStatus(examination.appointment_id, 3);
+            console.log(examination.appointment_id);
+            fetchUpdateStatus(examination.appointment_id, 7);
             fetchAPInvoice();
         }
     }, []);

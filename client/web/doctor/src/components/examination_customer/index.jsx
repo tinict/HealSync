@@ -111,6 +111,14 @@ function ExaminationCustomer({ patient_id }) {
         navigate("/appointment-schedule");
     };
 
+    const handleRexamination = () => {
+        axios.put('http://localhost:5002/api/v1/re-examination-schedules', {
+            "appointment_id": medicalRecs.appointment_id,
+            "status": 2
+        });
+        navigate("/re-examination-schedules");
+    };
+
     const handleOpen = () => {
         setOpen(true);
     };
@@ -172,19 +180,40 @@ function ExaminationCustomer({ patient_id }) {
                         <PatientReExaminationInfoModal patientInfo={patientInfo} />
                     )
                 }
-                <Button
-                    variant="contained"
-                    color="success"
-                    onClick={handlEndExamination}
-                    sx={{
-                        textTransform: 'none',
-                        backgroundColor: '#1976d2',
-                        '&:hover': { backgroundColor: '#115293' },
-                        boxShadow: '0 3px 5px 2px rgba(76, 175, 80, .3)',
-                    }}
-                >
-                    Hoàn thành
-                </Button>
+                {
+                    typeExamination !== "re-examination" && (
+                        <Button
+                            variant="contained"
+                            color="success"
+                            onClick={handlEndExamination}
+                            sx={{
+                                textTransform: 'none',
+                                backgroundColor: '#1976d2',
+                                '&:hover': { backgroundColor: '#115293' },
+                                boxShadow: '0 3px 5px 2px rgba(76, 175, 80, .3)',
+                            }}
+                        >
+                            Hoàn thành
+                        </Button>
+                    )
+                }
+                {
+                    typeExamination === "re-examination" && (
+                        <Button
+                            variant="contained"
+                            color="success"
+                            onClick={handleRexamination}
+                            sx={{
+                                textTransform: 'none',
+                                backgroundColor: '#1976d2',
+                                '&:hover': { backgroundColor: '#115293' },
+                                boxShadow: '0 3px 5px 2px rgba(76, 175, 80, .3)',
+                            }}
+                        >
+                            Hoàn thành tái khám
+                        </Button>
+                    )
+                }
             </Box>
             <ModalReExamination open={open} handleClose={handleClose} />
 
@@ -267,7 +296,7 @@ function ExaminationCustomer({ patient_id }) {
                                     <ListItemText primary={`Họ tên bệnh nhân: ${form.appointmentEntity.examinationRecordEntity.firstname} ${form.appointmentEntity.examinationRecordEntity.lastname}`} />
                                 </Box>
                                 <Box sx={{ marginBottom: 1 }}>
-                                    <ListItemText primary={`Giới tính: ${form.appointmentEntity.examinationRecordEntity.gender}`} />
+                                    <ListItemText primary={`Giới tính: ${form.appointmentEntity.examinationRecordEntity.gender ? 'Nam' : 'Nữ'}`} />
                                 </Box>
                                 <Box sx={{ marginBottom: 1 }}>
                                     <ListItemText primary={`Ngày sinh: ${form.appointmentEntity.examinationRecordEntity.dob}`} />

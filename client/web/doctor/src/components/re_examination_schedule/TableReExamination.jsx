@@ -28,7 +28,8 @@ export default function TableReExamination() {
         2: { text: "Đã đến tái khám", color: "green" },
         3: { text: "Hủy tái khám", color: "red" },
         4: { text: "Không đến tái khám", color: "red" },
-        5: { text: "Chưa có lịch khám", color: "red" },
+        5: { text: "Chưa đăng ký lịch tái khám", color: "red" },
+        6: { text: "Đang tái khám", color: "blue"}
     };
 
     const handleChangeAppointment = (appointment) => {

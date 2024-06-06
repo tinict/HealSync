@@ -67,6 +67,11 @@ export default function CalendarAppointment() {
         setEventDetail(null);
     };
 
+    const handleNoComeAppointment = () => {
+        handleUpdateStatusAppointment(eventDetail.extendedProps.details.id, 6);
+        setEventDetail(null);
+    };
+
     const genderMapping = {
         1: 'Nam',
         2: 'Nữ',
@@ -157,6 +162,9 @@ export default function CalendarAppointment() {
                     </Button>
                     <Button variant="contained" onClick={handleCancelAppointment}>
                         Yêu cầu đổi lịch
+                    </Button>
+                    <Button variant="contained" onClick={handleNoComeAppointment}>
+                        Không đến khám
                     </Button>
                     {
                         eventDetail?.extendedProps?.details?.eventType === 2 && (

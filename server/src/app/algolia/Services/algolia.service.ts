@@ -21,12 +21,12 @@ export class AlgoliaService {
 
             await index.setSettings({
                 searchableAttributes: attributeSearch,
-                attributesForFaceting: ['searchable(degree)', 'searchable(specialty)', 'searchable(position)'],
-                customRanking: ['desc(create_at)', 'asc(firstname)', 'asc(lastname)'],
+                attributesForFaceting: ['searchable(doctorEntity.degree)', 'searchable(doctorEntity.specialty)', 'searchable(doctorEntity.position)'],
+                customRanking: ['desc(doctorEntity.create_at)', 'asc(doctorEntity.firstname)', 'asc(doctorEntity.lastname)'],
                 highlightPreTag: '<em>',
                 highlightPostTag: '</em>',
-                attributesToHighlight: ['experience', 'position'],
-                attributesToSnippet: ['experience:50'],
+                attributesToHighlight: ['doctorEntity.experience', 'doctorEntity.position'],
+                attributesToSnippet: ['doctorEntity.experience:50'],
             });
 
             const searchResult = await index.search(
@@ -35,8 +35,8 @@ export class AlgoliaService {
                     filters: userFilters,
                     highlightPreTag: '<em>',
                     highlightPostTag: '</em>',
-                    attributesToHighlight: ['experience'],
-                    attributesToSnippet: ['experience:50'],
+                    attributesToHighlight: ['doctorEntity.experience'],
+                    attributesToSnippet: ['doctorEntity.experience:50'],
                 }
             );
 

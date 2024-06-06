@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Modal, Form, Breadcrumb } from 'react-bootstrap';
 import axios from 'axios';
-import { FaFileDownload, FaEye } from 'react-icons/fa';
-import { useDispatch, useSelector } from 'react-redux';
+import { FaEye } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 
 const ListMedicalRecord = ({ appointment_id }) => {

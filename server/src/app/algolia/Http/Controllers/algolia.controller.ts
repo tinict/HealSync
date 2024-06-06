@@ -8,7 +8,7 @@ export class AlgoliaController {
     constructor(
         @inject(TYPES.AlgoliaService)
         private algoliaService: AlgoliaService,
-    ) { }
+    ) { };
 
     async search(req: Request, res: Response) {
         try {
@@ -38,5 +38,5 @@ export class AlgoliaController {
         } catch (err: any) {
             return res.status(500).json({ message: err.message });
         }
-    }
+    };
 };

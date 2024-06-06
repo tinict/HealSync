@@ -65,7 +65,7 @@ export const TableRefunded = ({ refunds }: { refunds: any }) => {
                                     {refund.created_at}
                                 </TableCell>
                                 <TableCell>
-                                    {refund.refund_amount}
+                                    {refund.invoiceEntity.appointmentEntity.timeSlotEntity.cost}
                                 </TableCell>
                                 <TableCell>
                                     {refund.invoiceEntity.invoice_id}

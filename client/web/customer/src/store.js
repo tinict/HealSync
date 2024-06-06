@@ -7,7 +7,6 @@ import dateScheduleDoctorReducer from './Features/dateScheduleDoctorSlice.js';
 import filterDoctorReducer from './Features/filterDoctorSlice.js';
 import examinationReducer from './Features/examinationSlice.js';
 
-// Load state từ localStorage
 const loadState = () => {
     try {
         const serializedState = localStorage.getItem('state');

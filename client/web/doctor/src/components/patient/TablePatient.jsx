@@ -22,8 +22,11 @@ export default function TablePatient() {
         1: { text: "Chưa khám", color: "blue" },
         2: { text: "Đã đến khám", color: "green" },
         3: { text: "Hủy khám", color: "red" },
-        4: { text: "Đang chờ xử lý lịch", color: "red" },
-        5: { text: "Đang khám", color: "red" },
+        4: { text: "Đang chờ xử lý lịch", color: "blue" },
+        5: { text: "Đang khám", color: "green" },
+        6: { text: "Không đến khám", color: "green" },
+        7: { text: "Đặt lịch thất bại", color: "red" },
+        8: { text: "Đang đặt lịch", color: "green" },
     };
 
     return (

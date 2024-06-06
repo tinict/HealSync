@@ -28,7 +28,7 @@ function Info() {
           color: #fff;
         }
         .info-title-text {
-          background-color: #333;
+          background-color: #1485dc;
           border-radius: 4px;
           padding: 5px 10px;
         }

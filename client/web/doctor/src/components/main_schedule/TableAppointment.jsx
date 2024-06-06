@@ -28,8 +28,11 @@ export default function TableApointment() {
         1: { text: "Chưa khám", color: "blue" },
         2: { text: "Đã đến khám", color: "green" },
         3: { text: "Hủy khám", color: "red" },
-        4: { text: "Đang chờ xử lý lịch", color: "red" },
-        5: { text: "Đang khám", color: "red" },
+        4: { text: "Đang chờ xử lý lịch", color: "blue" },
+        5: { text: "Đang khám", color: "green" },
+        6: { text: "Không đến khám", color: "green" },
+        7: { text: "Đặt lịch thất bại", color: "red" },
+        8: { text: "Đang đặt lịch", color: "green" },
     };
 
     const confirmAPIReExaminationSchedule = () => {
@@ -42,6 +45,7 @@ export default function TableApointment() {
                     status_appointment: 1,
                     ordinalNumber: res.data.ordinalNumber
                 });
+                fetchApiPatients();
             })
     };
 
@@ -156,11 +160,11 @@ export default function TableApointment() {
                 >
                     <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
                         <Typography id="modal-modal-title" variant="h6" component="h2">
-                            Đổi lịch tái khám
+                            Đổi lịch khám
                         </Typography>
                         <TextField
                             id="date"
-                            label="Chọn ngày tái khám"
+                            label="Chọn ngày khám"
                             type="date"
                             value={selectedDate}
                             onChange={handleDateChange}

@@ -7,58 +7,60 @@ import { loginSuccess, logout } from '../Features/auth/authSlice';
 import { customer } from '../Features/customerSlice';
 import Cookies from 'js-cookie';
 import axios from 'axios';
-import logo from '../Assets/z5358536056347_d9d573f4c26c622464b085d089ab77ea.jpg (1).png'
+import logo from '../Assets/z5358536056347_d9d573f4c26c622464b085d089ab77ea.jpg (1).png';
 
 function Header() {
     const dispatch = useDispatch();
     const isLoggedIn = useSelector(state => state.auth.isAuthenticated);
-    const customerProfile = useSelector(state => state.customer);
-    const [userProfile, setUserProfile] = useState([]);
-    const [isLock, setIsLock] = useState(true);
+    // const customerProfile = useSelector(state => state.customer);
+    const [userProfile, setUserProfile] = useState({});
 
-    function logIn() {
+    const logIn = () => {
         window.open('http://localhost:5000/api/v1/auth/google', '_self');
-    }
-
-    function getProfileCustomer() {
-        const client_token = Cookies.get('client_token');
-        axios.get('http://localhost:5000/api/v1/google/account/me', {
-            headers: { Authorization: `${client_token}` }
-        })
-            .then((response) => {
-                console.log(response);
-                axios.get(`http://localhost:5002/api/v1/customer/me/${response.data.google_id}`)
-                    .then((res) => {
-                        setUserProfile(res.data);
-                        console.log(res.data);
-                        dispatch(customer(res.data));
-                        setIsLock(res.data.isActive);
-                        if (!res.data.isActive) {
-                            alert("Tài khoản bạn đã bị khóa!");
-                            logOut();
-                        }
-                    })
-            })
-            .catch(error => console.error(error));
     };
 
-    function logOut() {
+    const getProfileCustomer = async () => {
         const client_token = Cookies.get('client_token');
-        axios.post('http://localhost:5000/api/v1/google/logout', { client_token })
-            .then(() => {
-                Cookies.remove('client_token');
-                dispatch(logout());
-                localStorage.removeItem("state");
-            })
+        try {
+            const googleResponse = await axios.get('http://localhost:5000/api/v1/google/account/me', {
+                headers: { Authorization: `${client_token}` }
+            });
+            const customerResponse = await axios.get(`http://localhost:5002/api/v1/customer/me/${googleResponse.data.google_id}`);
+            setUserProfile(customerResponse.data);
+            dispatch(customer(customerResponse.data));
+            if (!customerResponse.data.isActive) {
+                alert("Tài khoản bạn đã bị khóa!");
+                logOut();
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const logOut = async () => {
+        const client_token = Cookies.get('client_token');
+        try {
+            await axios.post('http://localhost:5000/api/v1/google/logout', { client_token });
+            dispatch(logout());
+            Cookies.remove('client_token');
+            localStorage.removeItem("state");
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     useEffect(() => {
         const isLoggin = Cookies.get('client_token');
-        if (isLoggin != null && !isLoggedIn) {
+        if (isLoggin && !isLoggedIn) {
             dispatch(loginSuccess(isLoggin));
         }
-        getProfileCustomer();
-    }, []);
+        if (!isLoggin && isLoggedIn) {
+            localStorage.removeItem("state");
+            Cookies.remove('client_token');
+        } else {
+            getProfileCustomer();
+        }
+    }, [isLoggedIn, dispatch]);
 
     return (
         <header className="header bg-light py-3">
@@ -79,7 +81,7 @@ function Header() {
                     {isLoggedIn ? (
                         <Dropdown className="nav header-navbar-rht">
                             <Dropdown.Toggle className="nav-link header-login" id="dropdown-basic">
-                                <img src={`${userProfile.url_picture}`} alt="Avatar" className="avatar" />
+                                <img src={userProfile.url_picture} alt="Avatar" className="avatar" />
                             </Dropdown.Toggle>
                             <Dropdown.Menu className="dropdown-menu-right border">
                                 <Link to="/account/profile" className="dropdown-item dropdown-item-custom">

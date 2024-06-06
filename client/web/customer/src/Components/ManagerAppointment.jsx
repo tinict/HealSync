@@ -113,6 +113,9 @@ const AppointmentPage = () => {
         3: { text: "Đã hủy lịch", color: "danger" },
         4: { text: "Yêu cầu đổi lịch khám", color: "danger" },
         5: { text: "Bác sĩ đang khám", color: "primary" },
+        6: { text: "Không đến khám", color: "danger" },
+        7: { text: "Đặt lịch thất bại", color: "danger" },
+        8: { text: "Đang đặt lịch khám", color: "primary" },
     };
 
     const handleClose = (appointmentId) => {
@@ -207,7 +210,7 @@ const AppointmentPage = () => {
                                             <td>{appointment.appointmentEntity?.appointment_id}</td>
                                             <td>{appointment.appointmentEntity?.timeSlotEntity?.starttime} - {appointment.appointmentEntity?.timeSlotEntity?.endtime}</td>
                                             <td>
-                                                {appointment.appointmentEntity?.timeSlotEntity?.scheduleEntity?.doctorEntity?.firstname} 
+                                                {appointment.appointmentEntity?.timeSlotEntity?.scheduleEntity?.doctorEntity?.firstname}
                                                 {appointment.appointmentEntity?.timeSlotEntity?.scheduleEntity?.doctorEntity?.lastname}
                                             </td>
                                             <td>
@@ -232,7 +235,7 @@ const AppointmentPage = () => {
                                                 <Button
                                                     variant="danger"
                                                     onClick={() => handleShow(appointment.appointmentEntity?.appointment_id)}
-                                                    disabled={appointment.appointmentEntity?.status_appointment === 2 || appointment.appointmentEntity?.status_appointment === 3}
+                                                    disabled={appointment.appointmentEntity?.status_appointment !== 1 && appointment.appointmentEntity?.status_appointment !== 4}
                                                     style={{ padding: '8px 8px' }}
                                                 >
                                                     <CalendarX style={{ color: 'white', fontSize: '22px' }} />

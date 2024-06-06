@@ -57,7 +57,7 @@ export class TimeSlotService {
                 .createQueryBuilder("tbl_timeslot")
                 .leftJoinAndSelect("tbl_timeslot.scheduleEntity", "tbl_schedules")
                 .leftJoinAndSelect("tbl_schedules.doctorEntity", "tbl_doctors")
-                .where("tbl_schedules.doctor_id = :doctor_id and tbl_schedules.datework = :datework and tbl_schedules.isActive = :isActive and ((tbl_timeslot.starttime >= :starttime and tbl_timeslot.starttime < :endtime) or (tbl_timeslot.endtime > :starttime and tbl_timeslot.endtime <= :endtime) or (tbl_timeslot.starttime <= :starttime and tbl_timeslot.endtime >= :endtime))",
+                .where("tbl_timeslot.isActive = :isActive and tbl_schedules.doctor_id = :doctor_id and tbl_schedules.datework = :datework and tbl_schedules.isActive = :isActive and ((tbl_timeslot.starttime >= :starttime and tbl_timeslot.starttime < :endtime) or (tbl_timeslot.endtime > :starttime and tbl_timeslot.endtime <= :endtime) or (tbl_timeslot.starttime <= :starttime and tbl_timeslot.endtime >= :endtime))",
                     {
                         starttime: newTimeSlot.starttime,
                         endtime: newTimeSlot.endtime,
@@ -106,7 +106,7 @@ export class TimeSlotService {
                 }
             }
 
-            return results;
+            return results.filter(item => item.isActive == true);
         } catch (error: any) {
             throw error;
         }
@@ -163,7 +163,7 @@ export class TimeSlotService {
                 }
             }
 
-            return results;
+            return results.filter(item => item.isActive == true);
         } catch (error: any) {
             throw error;
         }
@@ -200,7 +200,7 @@ export class TimeSlotService {
                 }
             }
 
-            return results;
+            return results.filter(item => item.isActive == true);
         } catch (error: any) {
             throw error;
         }

@@ -35,7 +35,7 @@ export class AppointmentEntity extends BaseEntity {
     @Column({ type: "timestamp", default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
     update_at!: Timestamp;
 
-    @Column({ type: "enum", enum: StatusAppointment, default: StatusAppointment.pending })
+    @Column({ type: "enum", enum: StatusAppointment, default: StatusAppointment.scheduling })
     status_appointment!: StatusAppointment;
 
     @Column({ type: "varchar", length: 255, default: null })

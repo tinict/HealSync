@@ -105,7 +105,7 @@ const UserProfile = () => {
                                 size="150"
                                 style={{ marginBottom: '20px', cursor: 'pointer' }}
                             />
-                            <div className="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
+                            <div className="small font-italic text-muted mb-4"></div>
                             <Button variant="primary" onClick={() => document.getElementById('avatarInput').click()}>
                                 Thay ảnh đại diện
                             </Button>
